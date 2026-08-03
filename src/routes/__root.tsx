@@ -55,6 +55,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "AI Agents, Voice AI, Workflow Automation, and RAG Systems engineered for real business outcomes." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "apple-mobile-web-app-title", content: "Automa8" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
