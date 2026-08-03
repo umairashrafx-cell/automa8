@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { HiOutlineArrowUpRight, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import { useState, useEffect } from "react";
-import logo from "@/assets/automa8-logo.png.asset.json";
 
 
 const links = [
@@ -41,9 +40,9 @@ export function Navbar() {
         <div className="flex items-center justify-between gap-6">
           <a href="#home" className="flex items-center gap-2.5 pl-1">
             <img
-              src={logo.url}
+              src="/automa8-logo.png"
               alt="Automa8 logo"
-              className="h-12 w-12 rounded-full object-cover ring-1 ring-black/5 shadow-sm"
+              className="h-12 w-auto"
             />
             <span className="font-display text-lg font-medium tracking-tight text-[var(--ink)]">Automa8</span>
           </a>

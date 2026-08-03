@@ -1,5 +1,5 @@
 import { FaLinkedin, FaWhatsapp, FaEnvelope, FaGlobe } from "react-icons/fa6";
-import logo from "@/assets/automa8-logo.png.asset.json";
+
 
 
 const nav = [
@@ -19,9 +19,9 @@ export function Footer() {
         <div>
           <div className="flex items-center gap-3">
             <img
-              src={logo.url}
+              src="/automa8-logo.png"
               alt="Automa8 logo"
-              className="h-14 w-14 rounded-full object-cover ring-1 ring-black/5 shadow-sm"
+              className="h-12 w-auto"
             />
             <span className="font-display text-xl font-medium tracking-tight text-[var(--ink)]">Automa8</span>
           </div>
@@ -55,7 +55,7 @@ export function Footer() {
       <div className="border-t border-black/5">
         <div className="mx-auto max-w-[1280px] px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--ink-soft)]">
           <div>© 2026 Automa8. All Rights Reserved.</div>
-          <div>Crafted with care in Lahore, Pakistan.</div>
+          <div>Designed By Umair Ashraf.</div>
         </div>
       </div>
     </footer>
