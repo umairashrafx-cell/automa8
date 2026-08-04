@@ -11,6 +11,12 @@ const nav = [
   { href: "#testimonials", label: "Testimonials" },
   { href: "#contact", label: "Contact" },
 ];
+const legalLinks = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/security", label: "Security" },
+  { href: "/cookies", label: "Cookie Policy" },
+];
 
 export function Footer() {
   return (
@@ -53,11 +59,22 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-black/5">
-        <div className="mx-auto max-w-[1280px] px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--ink-soft)]">
-          <div>© 2026 Automa8. All Rights Reserved.</div>
-          <div>Designed By Umair Ashraf.</div>
-        </div>
-      </div>
+  <div className="mx-auto max-w-[1280px] px-6 py-6 flex flex-col gap-4 sm:flex-row items-center justify-between">
+    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-sm text-[var(--ink-soft)]">
+      <div>© 2026 Automa8. All Rights Reserved.</div>
+      <div>Designed By Umair Ashraf.</div>
+    </div>
+    <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-[var(--ink-soft)]">
+      {legalLinks.map((l) => (
+        <li key={l.href}>
+          <a href={l.href} className="hover:text-[var(--forest)]">
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
     </footer>
   );
 }
