@@ -42,7 +42,7 @@ export function Navbar() {
             <img
               src="/automa8-logo.png"
               alt="Automa8 logo"
-              className="h-12 w-auto"
+              className="h-12 w-12 rounded-full bg-white object-contain p-1 ring-1 ring-black/5 shadow-sm"
             />
             <span className="font-display text-lg font-medium tracking-tight text-[var(--ink)]">Automa8</span>
           </a>
