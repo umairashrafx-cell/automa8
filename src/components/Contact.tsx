@@ -105,16 +105,18 @@ export function Contact() {
                 {contact.email}
               </a>
             </li>
-            <li>
-              <button
-                type="button"
-                onClick={openBooking}
-                className="inline-flex items-center gap-3 text-text-soft transition-colors hover:text-text"
-              >
-                <CalendarDays className="h-4 w-4 text-brand" aria-hidden />
-                Prefer a call? Book a time
-              </button>
-            </li>
+            {contact.calLink && (
+              <li>
+                <button
+                  type="button"
+                  onClick={openBooking}
+                  className="inline-flex items-center gap-3 text-text-soft transition-colors hover:text-text"
+                >
+                  <CalendarDays className="h-4 w-4 text-brand" aria-hidden />
+                  Prefer a call? Book a time
+                </button>
+              </li>
+            )}
           </ul>
         </Reveal>
 

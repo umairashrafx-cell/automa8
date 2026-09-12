@@ -30,7 +30,7 @@ function CookiePolicy() {
 
       <h2>3. Third-Party Cookies</h2>
       <p>
-        Embedded tools such as scheduling (Calendly) and chat/support widgets may set their own
+        Embedded tools such as scheduling (Cal.com) and chat/support widgets may set their own
         cookies according to their respective privacy policies.
       </p>
 
