@@ -5,8 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans:
+    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    sans-serif;
+  --font-display: var(--font-sans);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -35,54 +37,37 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Automa8 brand tokens */
-  --color-ink: var(--ink);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-text: var(--text);
-  --color-text-soft: var(--text-soft);
-  --color-text-faint: var(--text-faint);
+  /* Automa8 brand accent — used sparingly (markers, focus, small details). */
   --color-brand: var(--brand);
-  --color-brand-soft: var(--brand-soft);
+  --color-border-strong: var(--border-strong);
 }
 
 :root {
-  /* Near-black canvas with one restrained accent taken from the Automa8 logo. */
-  --ink: #08090b;
-  --surface: #0f1115;
-  --surface-2: #151820;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --text: #f3f4f6;
-  --text-soft: #a1a7b3;
-  --text-faint: #8a909c;
-  --brand: #4c9dff;
-  --brand-soft: rgba(76, 157, 255, 0.14);
-
-  --background: var(--ink);
-  --foreground: var(--text);
-  --card: var(--surface);
-  --card-foreground: var(--text);
-  --popover: var(--surface-2);
-  --popover-foreground: var(--text);
-  --primary: #f3f4f6;
-  --primary-foreground: #08090b;
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--text);
-  --muted: var(--surface);
-  --muted-foreground: var(--text-soft);
-  --accent: var(--surface-2);
-  --accent-foreground: var(--text);
-  --destructive: oklch(0.637 0.237 25.331);
+  --background: #f8f8f6;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f1ee;
+  --secondary-foreground: #111111;
+  --muted: #f1f1ee;
+  --muted-foreground: #666666;
+  --accent: #f1f1ee;
+  --accent-foreground: #111111;
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
-  --border: var(--line);
-  --input: var(--line-strong);
-  --ring: var(--brand);
+  --border: #e8e8e5;
+  --border-strong: #d4d4cf;
+  --input: #e8e8e5;
+  /* The logo's blue, deepened so it holds contrast on warm white. */
+  --brand: #1f6fd6;
+  --ring: #1f6fd6;
   --radius: 1rem;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @layer base {
@@ -91,7 +76,7 @@
   }
 
   html {
-    background-color: var(--ink);
+    background-color: var(--background);
     scroll-padding-top: 88px;
   }
 
@@ -115,14 +100,17 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
-    letter-spacing: -0.012em;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background: rgba(76, 157, 255, 0.35);
-    color: #fff;
+    background: #111111;
+    color: #ffffff;
   }
 
   :focus-visible {
@@ -132,29 +120,60 @@
   }
 }
 
-/* Faint technical grid, masked so it fades out toward the edges. */
-@utility bg-grid {
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
-}
-
-@utility glass {
-  background: rgba(21, 24, 32, 0.6);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid var(--line);
-}
-
 @utility container-page {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1280px;
   margin-inline: auto;
   padding-inline: 1.25rem;
   @media (min-width: 640px) {
     padding-inline: 2rem;
+  }
+  @media (min-width: 1024px) {
+    padding-inline: 3rem;
+  }
+}
+
+/* Small uppercase label used above section headings. */
+@utility eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Premium buttons: 250ms transitions, arrow nudges on hover. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.875rem 1.5rem;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease;
+}
+
+@utility btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  &:hover {
+    background-color: #2a2a2a;
+  }
+}
+
+@utility btn-secondary {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border-strong);
+  &:hover {
+    border-color: var(--foreground);
   }
 }
 
@@ -162,7 +181,7 @@
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -174,28 +193,6 @@
   animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Signal travelling down the "More than a website" flow. */
-@keyframes signal {
-  0% {
-    top: -10%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-@utility animate-signal {
-  animation: signal 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -204,23 +201,21 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .animate-signal {
-    display: none;
-  }
 }
 
 /* Long-form content for the legal pages. */
 @utility legal {
-  color: var(--text-soft);
-  font-size: 15px;
+  color: var(--muted-foreground);
+  font-size: 16px;
   line-height: 1.75;
 
   & h2 {
     margin-top: 2.5rem;
     margin-bottom: 0.75rem;
-    color: var(--text);
+    color: var(--foreground);
     font-size: 1.125rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
   & p,
   & ul {
@@ -231,12 +226,12 @@
     padding-left: 1.25rem;
   }
   & a {
-    color: var(--text);
+    color: var(--foreground);
     text-decoration: underline;
-    text-decoration-color: var(--line-strong);
+    text-decoration-color: var(--border-strong);
     text-underline-offset: 3px;
   }
   & a:hover {
-    text-decoration-color: var(--brand);
+    text-decoration-color: var(--foreground);
   }
 }

@@ -15,15 +15,12 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="font-display text-sm font-semibold tracking-[0.18em] text-text">
+        <p className="text-sm font-semibold tracking-[0.2em] text-foreground">
           AUTOMA<span className="text-brand">8</span>
         </p>
-        <h1 className="mt-8 font-display text-7xl font-semibold text-text">404</h1>
-        <p className="mt-3 text-sm text-text-soft">This page doesn&apos;t exist.</p>
-        <a
-          href="/"
-          className="mt-8 inline-flex rounded-full bg-text px-5 py-2.5 text-sm font-medium text-ink hover:bg-white"
-        >
+        <h1 className="mt-8 text-7xl font-semibold tracking-[-0.04em] text-foreground">404</h1>
+        <p className="mt-3 text-base text-muted-foreground">This page doesn&apos;t exist.</p>
+        <a href="/" className="btn btn-primary mt-8">
           Go home
         </a>
       </div>
@@ -39,13 +36,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-xl font-semibold text-text">This page didn&apos;t load</h1>
+        <h1 className="text-xl font-semibold text-foreground">This page didn&apos;t load</h1>
         <button
           onClick={() => {
             router.invalidate();
             reset();
           }}
-          className="mt-6 inline-flex rounded-full bg-text px-5 py-2.5 text-sm font-medium text-ink hover:bg-white"
+          className="btn btn-primary mt-6"
         >
           Try again
         </button>
@@ -66,7 +63,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Automa8 builds AI systems, modern websites and business automation for real businesses.",
       },
       { name: "author", content: "Umair Ashraf" },
-      { name: "theme-color", content: "#08090b" },
+      { name: "theme-color", content: "#f8f8f6" },
       { property: "og:site_name", content: "Automa8" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
@@ -84,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap",
       },
     ],
   }),

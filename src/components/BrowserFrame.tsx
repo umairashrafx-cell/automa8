@@ -6,10 +6,12 @@ type Props = {
   sizes: string;
   priority?: boolean;
   className?: string;
+  /** Classes for the image viewport, e.g. an aspect ratio. */
+  viewportClassName?: string;
   imgClassName?: string;
 };
 
-/** A real screenshot of a live project, presented inside a minimal browser window. */
+/** A real screenshot of a live project, presented inside a minimal light browser window. */
 export function BrowserFrame({
   domain,
   imageBase,
@@ -17,24 +19,28 @@ export function BrowserFrame({
   sizes,
   priority,
   className = "",
+  viewportClassName = "aspect-[1440/860]",
   imgClassName = "",
 }: Props) {
   return (
     <div
-      className={`overflow-hidden rounded-xl border border-line-strong bg-surface-2 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] ${className}`}
+      className={`overflow-hidden rounded-2xl border border-border bg-card shadow-[0_1px_2px_rgba(17,17,17,0.04),0_24px_48px_-24px_rgba(17,17,17,0.18)] ${className}`}
     >
-      <div className="flex h-8 items-center gap-3 border-b border-line bg-surface px-3" aria-hidden>
+      <div
+        className="flex h-9 items-center gap-3 border-b border-border bg-card px-3.5"
+        aria-hidden
+      >
         <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-          <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#e8e8e5]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#e8e8e5]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#e8e8e5]" />
         </div>
-        <div className="mx-auto max-w-[60%] truncate rounded-md bg-white/[0.06] px-3 py-0.5 text-[11px] text-text-faint">
+        <div className="mx-auto max-w-[60%] truncate rounded-md bg-muted px-3 py-1 text-[11px] text-muted-foreground">
           {domain}
         </div>
         <div className="w-[42px]" />
       </div>
-      <div className="relative aspect-[1440/860] overflow-hidden">
+      <div className={`relative overflow-hidden bg-muted ${viewportClassName}`}>
         <img
           src={`${imageBase}-800.jpg`}
           srcSet={`${imageBase}-800.jpg 800w, ${imageBase}-1440.jpg 1440w`}
@@ -45,7 +51,7 @@ export function BrowserFrame({
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
-          className={`h-full w-full object-cover object-top ${imgClassName}`}
+          className={`h-full w-full object-cover object-left-top ${imgClassName}`}
         />
       </div>
     </div>

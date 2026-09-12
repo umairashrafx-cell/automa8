@@ -1,40 +1,41 @@
-import { Bot, Code2, ShoppingBag, Workflow } from "lucide-react";
 import { Reveal } from "./Reveal";
 
-const capabilities = [
-  { icon: Code2, label: "Web Development" },
-  { icon: Bot, label: "AI Systems" },
-  { icon: Workflow, label: "Business Automation" },
-  { icon: ShoppingBag, label: "E-commerce" },
-];
+const capabilities = ["Websites", "AI", "Automation", "Digital Systems"];
 
 export function Intro() {
   return (
     <section
       aria-labelledby="intro-title"
-      className="border-y border-line bg-surface/40 py-16 md:py-20"
+      className="border-y border-border bg-card py-20 md:py-28"
     >
-      <div className="container-page grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-16">
+      <div className="container-page grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-20">
         <Reveal>
           <h2
             id="intro-title"
-            className="font-display text-3xl font-semibold text-text sm:text-4xl"
+            className="text-4xl font-semibold leading-[1.05] text-foreground sm:text-5xl"
           >
-            From idea to working system.
+            Built for real businesses.
           </h2>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-text-soft sm:text-lg">
-            I combine web development, AI and automation to build digital systems around the way a
-            business actually works.
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            From e-commerce websites to AI-powered workflows, we design and build digital systems
+            that solve real business problems.
           </p>
         </Reveal>
 
-        <ul className="grid grid-cols-2 gap-3">
+        <ul className="grid grid-cols-2 border-l border-t border-border">
           {capabilities.map((c, i) => (
-            <Reveal as="li" key={c.label} delay={i * 0.06}>
-              <div className="flex h-full items-center gap-3 rounded-xl border border-line bg-surface px-4 py-4 sm:px-5">
-                <c.icon className="h-5 w-5 shrink-0 text-brand" aria-hidden strokeWidth={1.75} />
-                <span className="text-sm font-medium text-text sm:text-[15px]">{c.label}</span>
-              </div>
+            <Reveal
+              as="li"
+              key={c}
+              delay={i * 0.05}
+              className="border-b border-r border-border px-5 py-6 sm:px-6 sm:py-8"
+            >
+              <span className="block text-xs tabular-nums text-muted-foreground">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="mt-3 block text-lg font-medium tracking-tight text-foreground sm:text-xl">
+                {c}
+              </span>
             </Reveal>
           ))}
         </ul>
