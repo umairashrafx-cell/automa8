@@ -5,15 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
-  --radius-2xl: 28px;
-  --radius-3xl: 32px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -35,44 +35,54 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-sage: var(--sage);
-  --color-sage-deep: var(--sage-deep);
-  --color-forest: var(--forest);
-  --color-cream: var(--cream);
-  --color-tangerine: var(--tangerine);
+  /* Automa8 brand tokens */
   --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-soft: var(--text-soft);
+  --color-text-faint: var(--text-faint);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --ink: #1a1a1a;
-  --ink-soft: #5a5a5a;
-  --cream: #dad7cd;
-  --sage: #a3b18a;
-  --sage-deep: #588157;
-  --forest: #3a5a40;
-  --tangerine: #f28500;
+  /* Near-black canvas with one restrained accent taken from the Automa8 logo. */
+  --ink: #08090b;
+  --surface: #0f1115;
+  --surface-2: #151820;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #f3f4f6;
+  --text-soft: #a1a7b3;
+  --text-faint: #8a909c;
+  --brand: #4c9dff;
+  --brand-soft: rgba(76, 157, 255, 0.14);
 
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #3a5a40;
-  --primary-foreground: #ffffff;
-  --secondary: #dad7cd;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f4f3ef;
-  --muted-foreground: #5a5a5a;
-  --accent: #a3b18a;
-  --accent-foreground: #1a1a1a;
-  --destructive: oklch(0.577 0.245 27.325);
+  --background: var(--ink);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface-2);
+  --popover-foreground: var(--text);
+  --primary: #f3f4f6;
+  --primary-foreground: #08090b;
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface);
+  --muted-foreground: var(--text-soft);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text);
+  --destructive: oklch(0.637 0.237 25.331);
   --destructive-foreground: #ffffff;
-  --border: rgba(26, 26, 26, 0.08);
-  --input: rgba(26, 26, 26, 0.12);
-  --ring: #a3b18a;
-  --radius: 1.5rem;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--brand);
+  --radius: 1rem;
+
+  color-scheme: dark;
 }
 
 @layer base {
@@ -81,51 +91,152 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    background-color: var(--ink);
+    scroll-padding-top: 88px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgba(76, 157, 255, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 3px;
+    border-radius: 6px;
   }
 }
 
-@utility glass-card {
-  background: color-mix(in oklab, white 70%, transparent);
-  backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(26, 26, 26, 0.06);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 20px 40px -20px rgba(58, 90, 64, 0.15);
-}
-
-@utility glass-dark {
-  background: color-mix(in oklab, #1a1a1a 88%, transparent);
-  backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-@utility mesh-bg {
+/* Faint technical grid, masked so it fades out toward the edges. */
+@utility bg-grid {
   background-image:
-    radial-gradient(at 20% 20%, rgba(163, 177, 138, 0.25) 0px, transparent 50%),
-    radial-gradient(at 80% 10%, rgba(242, 133, 0, 0.12) 0px, transparent 50%),
-    radial-gradient(at 60% 90%, rgba(58, 90, 64, 0.18) 0px, transparent 50%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
 }
 
-@utility noise {
-  position: relative;
+@utility glass {
+  background: rgba(21, 24, 32, 0.6);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--line);
 }
-@utility noise-overlay {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
-  opacity: 0.04;
-  pointer-events: none;
+
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (min-width: 640px) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Hero entrance — CSS only, so content is visible in the server-rendered HTML. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Signal travelling down the "More than a website" flow. */
+@keyframes signal {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@utility animate-signal {
+  animation: signal 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .animate-signal {
+    display: none;
+  }
+}
+
+/* Long-form content for the legal pages. */
+@utility legal {
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.75;
+
+  & h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  & p,
+  & ul {
+    margin-bottom: 1rem;
+  }
+  & ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  & a {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--line-strong);
+    text-underline-offset: 3px;
+  }
+  & a:hover {
+    text-decoration-color: var(--brand);
+  }
 }

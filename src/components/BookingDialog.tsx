@@ -1,20 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import {
-  HiOutlineXMark,
-  HiOutlineArrowUpRight,
-  HiOutlineClock,
-  HiOutlineCalendarDays,
-  HiOutlineChevronLeft,
-  HiOutlineChevronRight,
-} from "react-icons/hi2";
+import { ArrowUpRight, CalendarDays, ChevronLeft, ChevronRight, Clock, X } from "lucide-react";
 import {
   getConsultationEventTypes,
   getConsultationSlots,
   type CalendlyEventType,
 } from "@/lib/calendly.functions";
+import { whatsappLink } from "@/lib/site";
 
 export const BOOKING_EVENT = "umair:open-booking";
 
@@ -39,6 +33,7 @@ function addDays(d: Date, n: number) {
 
 export function BookingDialog() {
   const [open, setOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handler = () => setOpen(true);
@@ -47,9 +42,16 @@ export function BookingDialog() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+      previouslyFocused?.focus();
     };
   }, [open]);
 
@@ -60,29 +62,30 @@ export function BookingDialog() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-6"
         >
           <div
-            className="absolute inset-0 bg-[var(--ink)]/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
             aria-hidden
           />
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-label="Book a consultation"
+            aria-labelledby="booking-title"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full sm:max-w-[720px] max-h-[92vh] overflow-y-auto rounded-t-[28px] sm:rounded-[28px] bg-white shadow-2xl border border-black/[0.06]"
+            className="relative max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-line-strong bg-surface shadow-2xl sm:max-w-[720px] sm:rounded-3xl"
           >
             <button
+              ref={closeRef}
               onClick={() => setOpen(false)}
               aria-label="Close booking"
-              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-black/10 bg-white text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors"
+              className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-line-strong text-text-soft transition-colors hover:text-text"
             >
-              <HiOutlineXMark className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden />
             </button>
             <BookingFlow />
           </motion.div>
@@ -99,6 +102,7 @@ function BookingFlow() {
     queryKey: ["calendly", "event-types"],
     queryFn: () => loadEventTypes(),
     staleTime: 60_000,
+    retry: 1,
   });
 
   const [selected, setSelected] = useState<CalendlyEventType | null>(null);
@@ -110,16 +114,17 @@ function BookingFlow() {
 
   return (
     <div className="p-7 sm:p-9">
-      <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-[var(--ink-soft)]">
-        <span className="h-1 w-1 rounded-full bg-[var(--tangerine)]" /> Consultation
-      </div>
-      <h2 className="mt-4 font-display text-2xl sm:text-3xl font-medium tracking-tight">
-        {selected ? "Pick a time that works." : "Choose your session."}
+      <p className="text-xs font-medium uppercase tracking-[0.28em] text-brand">Book a call</p>
+      <h2
+        id="booking-title"
+        className="mt-3 pr-10 font-display text-2xl font-semibold text-text sm:text-3xl"
+      >
+        {selected ? "Pick a time that works." : "Choose a session."}
       </h2>
-      <p className="mt-2 text-[14px] leading-relaxed text-[var(--ink-soft)]">
+      <p className="mt-2 text-sm leading-relaxed text-text-soft">
         {selected
           ? `${selected.duration} minutes · times shown in your local timezone.`
-          : "A free strategy call to map your first (or next) high-leverage AI system."}
+          : "A short call to talk through what you want to build."}
       </p>
 
       {typesQuery.isLoading && <SkeletonRows />}
@@ -141,18 +146,21 @@ function BookingFlow() {
             <button
               key={t.uri}
               onClick={() => setSelected(t)}
-              className="group w-full text-left flex items-center gap-4 rounded-2xl border border-black/[0.06] bg-white p-4 hover:border-[var(--sage)] transition-colors"
+              className="group flex w-full items-center gap-4 rounded-2xl border border-line bg-surface-2 p-4 text-left transition-colors hover:border-brand/50"
             >
-              <div className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--cream)]/60 text-[var(--forest)]">
-                <HiOutlineClock className="h-5 w-5" />
+              <div className="grid h-11 w-11 place-items-center rounded-xl bg-brand-soft text-brand">
+                <Clock className="h-5 w-5" aria-hidden />
               </div>
               <div className="flex-1">
-                <div className="text-sm font-medium text-[var(--ink)]">{t.name}</div>
-                <div className="text-[12px] text-[var(--ink-soft)]">
+                <div className="text-sm font-medium text-text">{t.name}</div>
+                <div className="text-xs text-text-soft">
                   {t.duration} minutes{t.description ? ` · ${t.description.slice(0, 70)}` : ""}
                 </div>
               </div>
-              <HiOutlineArrowUpRight className="h-4 w-4 text-[var(--ink-soft)] group-hover:text-[var(--forest)]" />
+              <ArrowUpRight
+                className="h-4 w-4 text-text-faint group-hover:text-brand"
+                aria-hidden
+              />
             </button>
           ))}
         </div>
@@ -183,10 +191,7 @@ function SlotPicker({
   const [activeDay, setActiveDay] = useState(0);
 
   const today = useMemo(() => startOfDay(new Date()), []);
-  const rangeStart = useMemo(
-    () => addDays(today, page * DAYS_PER_PAGE),
-    [today, page],
-  );
+  const rangeStart = useMemo(() => addDays(today, page * DAYS_PER_PAGE), [today, page]);
   const days = useMemo(
     () => Array.from({ length: DAYS_PER_PAGE }, (_, i) => addDays(rangeStart, i)),
     [rangeStart],
@@ -198,16 +203,13 @@ function SlotPicker({
     const s = new Date(rangeStart);
     return (s < now ? new Date(now.getTime() + 60_000) : s).toISOString();
   }, [rangeStart]);
-  const endTime = useMemo(
-    () => addDays(rangeStart, DAYS_PER_PAGE).toISOString(),
-    [rangeStart],
-  );
+  const endTime = useMemo(() => addDays(rangeStart, DAYS_PER_PAGE).toISOString(), [rangeStart]);
 
   const slotsQuery = useQuery({
     queryKey: ["calendly", "slots", eventType.uri, startTime],
-    queryFn: () =>
-      loadSlots({ data: { eventTypeUri: eventType.uri, startTime, endTime } }),
+    queryFn: () => loadSlots({ data: { eventTypeUri: eventType.uri, startTime, endTime } }),
     staleTime: 60_000,
+    retry: 1,
   });
 
   const slotsByDay = useMemo(() => {
@@ -231,8 +233,8 @@ function SlotPicker({
   return (
     <div className="mt-7">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[12px] text-[var(--ink-soft)]">
-          <HiOutlineCalendarDays className="h-4 w-4" />
+        <div className="flex items-center gap-2 text-xs text-text-soft">
+          <CalendarDays className="h-4 w-4" aria-hidden />
           {rangeStart.toLocaleDateString(undefined, { month: "long", year: "numeric" })}
         </div>
         <div className="flex items-center gap-2">
@@ -240,16 +242,16 @@ function SlotPicker({
             onClick={() => goPage(-1)}
             disabled={page === 0}
             aria-label="Previous week"
-            className="grid h-8 w-8 place-items-center rounded-full border border-black/10 disabled:opacity-30 hover:border-[var(--sage)] transition-colors"
+            className="grid h-8 w-8 place-items-center rounded-full border border-line-strong text-text transition-colors hover:border-brand/50 disabled:opacity-30"
           >
-            <HiOutlineChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" aria-hidden />
           </button>
           <button
             onClick={() => goPage(1)}
             aria-label="Next week"
-            className="grid h-8 w-8 place-items-center rounded-full border border-black/10 hover:border-[var(--sage)] transition-colors"
+            className="grid h-8 w-8 place-items-center rounded-full border border-line-strong text-text transition-colors hover:border-brand/50"
           >
-            <HiOutlineChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
       </div>
@@ -263,12 +265,13 @@ function SlotPicker({
               key={d.toISOString()}
               onClick={() => setActiveDay(i)}
               disabled={count === 0}
-              className={`rounded-2xl border px-1 py-2.5 text-center transition-colors ${
+              aria-pressed={active}
+              className={`rounded-xl border px-1 py-2.5 text-center transition-colors ${
                 active
-                  ? "border-[var(--forest)] bg-[var(--forest)] text-white"
+                  ? "border-brand bg-brand text-ink"
                   : count === 0
-                    ? "border-black/[0.06] text-[var(--ink-soft)]/40"
-                    : "border-black/[0.06] hover:border-[var(--sage)] text-[var(--ink)]"
+                    ? "border-line text-text-faint/50"
+                    : "border-line text-text hover:border-brand/50"
               }`}
             >
               <div className="text-[10px] uppercase tracking-widest opacity-70">
@@ -290,19 +293,17 @@ function SlotPicker({
           />
         )}
         {slotsQuery.data && daySlots.length === 0 && (
-          <p className="text-sm text-[var(--ink-soft)]">
-            No open times this week — try the next one.
-          </p>
+          <p className="text-sm text-text-soft">No open times this week — try the next one.</p>
         )}
         {daySlots.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {daySlots.map((s) => (
               <a
                 key={s.startTime}
                 href={s.schedulingUrl}
                 target="_blank"
-                rel="noreferrer"
-                className="rounded-2xl border border-black/10 px-3 py-3 text-center text-sm font-medium text-[var(--ink)] hover:bg-[var(--ink)] hover:text-white hover:border-[var(--ink)] transition-colors"
+                rel="noopener noreferrer"
+                className="rounded-xl border border-line-strong px-3 py-3 text-center text-sm font-medium text-text transition-colors hover:border-text hover:bg-text hover:text-ink"
               >
                 {new Date(s.startTime).toLocaleTimeString(undefined, {
                   hour: "numeric",
@@ -318,7 +319,7 @@ function SlotPicker({
         {canGoBack ? (
           <button
             onClick={onBack}
-            className="text-[12px] uppercase tracking-widest text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors"
+            className="text-xs uppercase tracking-widest text-text-soft transition-colors hover:text-text"
           >
             ← Change session
           </button>
@@ -328,8 +329,8 @@ function SlotPicker({
         <a
           href={eventType.schedulingUrl}
           target="_blank"
-          rel="noreferrer"
-          className="text-[12px] uppercase tracking-widest text-[var(--forest)] hover:underline"
+          rel="noopener noreferrer"
+          className="text-xs uppercase tracking-widest text-brand hover:underline"
         >
           Full calendar
         </a>
@@ -342,7 +343,7 @@ function SkeletonRows() {
   return (
     <div className="mt-7 space-y-3" aria-busy="true">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="h-14 rounded-2xl bg-[var(--cream)]/70 animate-pulse" />
+        <div key={i} className="h-14 animate-pulse rounded-2xl bg-surface-2" />
       ))}
     </div>
   );
@@ -350,16 +351,16 @@ function SkeletonRows() {
 
 function FallbackNotice({ message, href }: { message: string; href?: string }) {
   return (
-    <div className="mt-7 rounded-2xl border border-black/[0.06] bg-[var(--cream)]/50 p-5">
-      <p className="text-sm text-[var(--ink-soft)]">{message}</p>
+    <div className="mt-7 rounded-2xl border border-line bg-surface-2 p-5">
+      <p className="text-sm text-text-soft">{message}</p>
       <a
-        href={href ?? "https://wa.me/923429900050"}
+        href={href ?? whatsappLink("Hi Umair, I'd like to book a call about a project.")}
         target="_blank"
-        rel="noreferrer"
-        className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] hover:bg-[var(--forest)] text-white px-4 py-2.5 text-sm font-medium transition-colors"
+        rel="noopener noreferrer"
+        className="mt-3 inline-flex items-center gap-2 rounded-full bg-text px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-white"
       >
         {href ? "Open the booking calendar" : "Message me on WhatsApp"}
-        <HiOutlineArrowUpRight className="h-4 w-4" />
+        <ArrowUpRight className="h-4 w-4" aria-hidden />
       </a>
     </div>
   );

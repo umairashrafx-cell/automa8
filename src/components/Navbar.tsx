@@ -1,109 +1,117 @@
-import { motion } from "framer-motion";
-import { HiOutlineArrowUpRight, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
-import { useState, useEffect } from "react";
-
-
-const links = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-  { href: "#certifications", label: "Certifications" },
-  { href: "#testimonials", label: "Testimonials" },
-  { href: "#contact", label: "Contact" },
-];
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { navLinks } from "@/lib/site";
+import { Wordmark } from "./Wordmark";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onResize = () => window.innerWidth >= 768 && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open]);
+
+  const solid = scrolled || open;
+
   return (
-    <motion.header
-      initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 inset-x-0 z-50 flex justify-center px-4 pt-4"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+        solid
+          ? "border-line bg-ink/80 backdrop-blur-xl supports-[backdrop-filter]:bg-ink/65"
+          : "border-transparent bg-transparent"
+      }`}
     >
       <nav
-        className={`glass-card w-full max-w-[1280px] rounded-full transition-all duration-500 ${
-          scrolled ? "px-3 py-2 shadow-lg" : "px-4 py-3"
-        }`}
+        aria-label="Main"
+        className="container-page flex h-16 items-center justify-between md:h-[72px]"
       >
-        <div className="flex items-center justify-between gap-6">
-          <a href="#home" className="flex items-center gap-2.5 pl-1">
-            <img
-              src="/automa8-logo.png"
-              alt="Automa8 logo"
-              className="h-12 w-12 rounded-full bg-white object-contain p-1 ring-1 ring-black/5 shadow-sm"
-            />
-            <span className="font-display text-lg font-medium tracking-tight text-[var(--ink)]">Automa8</span>
-          </a>
+        <a href="/" aria-label="Automa8 home" className="-ml-1 rounded-md px-1 py-1">
+          <Wordmark />
+        </a>
 
-
-          <div className="hidden lg:flex items-center gap-1">
-            {links.map((l) => (
+        <ul className="hidden items-center gap-1 md:flex">
+          {navLinks.map((l) => (
+            <li key={l.href}>
               <a
-                key={l.href}
                 href={l.href}
-                className="px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] hover:text-[var(--ink)] transition-colors"
+                className="rounded-full px-4 py-2 text-sm text-text-soft transition-colors hover:text-text"
               >
                 {l.label}
               </a>
-            ))}
-          </div>
+            </li>
+          ))}
+        </ul>
 
-          <div className="flex items-center gap-2">
-            <a
-              href="#contact"
-              className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[var(--ink)] text-white px-4 py-2 text-[13px] font-medium hover:bg-[var(--forest)] transition-colors"
-            >
-              Let's Build AI Systems
-              <HiOutlineArrowUpRight className="h-3.5 w-3.5" />
-            </a>
-            <button
-              className="lg:hidden grid place-items-center h-10 w-10 rounded-full bg-white/60"
-              onClick={() => setOpen(!open)}
-              aria-label="Toggle menu"
-            >
-              {open ? <HiOutlineXMark /> : <HiOutlineBars3 />}
-            </button>
-          </div>
-        </div>
-
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            className="lg:hidden mt-3 border-t border-black/5 pt-3 grid grid-cols-2 gap-1"
+        <div className="flex items-center gap-2">
+          <a
+            href="/#contact"
+            className="hidden items-center gap-1.5 rounded-full bg-text px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-white md:inline-flex"
           >
-            {links.map((l) => (
+            Start a Project
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </a>
+          <button
+            type="button"
+            className="grid h-10 w-10 place-items-center rounded-full border border-line text-text md:hidden"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            {open ? (
+              <X className="h-5 w-5" aria-hidden />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden />
+            )}
+          </button>
+        </div>
+      </nav>
+
+      <div
+        id="mobile-menu"
+        hidden={!open}
+        className="border-t border-line bg-ink/95 backdrop-blur-xl md:hidden"
+      >
+        <ul className="container-page flex flex-col py-3">
+          {navLinks.map((l) => (
+            <li key={l.href}>
               <a
-                key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="px-3 py-2 text-sm text-[var(--ink-soft)] rounded-xl hover:bg-black/5"
+                className="flex items-center justify-between border-b border-line py-4 font-display text-2xl text-text"
               >
                 {l.label}
+                <ArrowUpRight className="h-5 w-5 text-text-faint" aria-hidden />
               </a>
-            ))}
+            </li>
+          ))}
+          <li className="pb-3 pt-5">
             <a
-              href="#contact"
+              href="/#contact"
               onClick={() => setOpen(false)}
-              className="col-span-2 mt-2 text-center rounded-full bg-[var(--ink)] text-white px-4 py-2.5 text-sm"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-text py-3.5 text-sm font-medium text-ink"
             >
-              Let's Build AI Systems
+              Start a Project
+              <ArrowUpRight className="h-4 w-4" aria-hidden />
             </a>
-          </motion.div>
-        )}
-      </nav>
-    </motion.header>
+          </li>
+        </ul>
+      </div>
+    </header>
   );
 }

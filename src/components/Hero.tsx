@@ -1,239 +1,132 @@
-import { motion } from "framer-motion";
-import { HiOutlineArrowUpRight, HiOutlineSparkles, HiOutlineBolt, HiOutlineCheckCircle } from "react-icons/hi2";
-import { TbBrandOpenai } from "react-icons/tb";
-import { SiSupabase, SiLangchain, SiWhatsapp } from "react-icons/si";
-import { openBooking } from "@/components/BookingDialog";
-
-
-const metrics = [
-  { value: "50+", label: "AI Systems Delivered" },
-  { value: "10+", label: "AI Technologies" },
-  { value: "1000+", label: "Hours Automated" },
-  { value: "99%", label: "Workflow Reliability" },
-];
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { projects } from "@/lib/projects";
+import { BrowserFrame } from "./BrowserFrame";
 
 export function Hero() {
+  const [front, back] = projects;
+
   return (
-    <section id="home" className="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
-      {/* mesh background */}
-      <div className="absolute inset-0 mesh-bg -z-10" />
-      <div className="absolute inset-0 noise-overlay -z-10" />
-      {/* floating blur */}
-      <div className="absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full bg-[var(--sage)]/30 blur-[120px] -z-10" />
-      <div className="absolute top-1/3 -right-32 w-[400px] h-[400px] rounded-full bg-[var(--tangerine)]/15 blur-[120px] -z-10" />
+    <section
+      id="home"
+      className="relative isolate overflow-hidden pb-20 pt-28 sm:pt-32 md:pb-28 lg:pt-40"
+    >
+      {/* Subtle grid and a single restrained glow */}
+      <div className="bg-grid absolute inset-0 -z-10" aria-hidden />
+      <div
+        className="absolute left-1/2 top-[-20%] -z-10 h-[560px] w-[900px] max-w-[140vw] -translate-x-1/2 rounded-full bg-brand/15 blur-[140px]"
+        aria-hidden
+      />
 
-      <div className="mx-auto max-w-[1280px] px-6 grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
-        {/* Left */}
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full glass-card px-3.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-[var(--ink-soft)]"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--tangerine)]" />
-            AI • Automation • AI Agents • Voice AI
-          </motion.div>
+      <div className="container-page">
+        <p className="animate-rise text-xs font-medium uppercase tracking-[0.28em] text-brand">
+          AI · Web · Automation
+        </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="mt-6 font-display text-[44px] leading-[1.02] sm:text-[56px] lg:text-[68px] font-medium tracking-tight text-[var(--ink)]"
-          >
-            Building Intelligent{" "}
-            <span className="relative inline-block">
-              <span className="italic font-light text-[var(--forest)]">AI Systems</span>
-              <svg className="absolute -bottom-2 left-0 w-full" height="10" viewBox="0 0 200 10" fill="none">
-                <path d="M2 6C50 2 150 2 198 6" stroke="var(--tangerine)" strokeWidth="2.5" strokeLinecap="round" />
-              </svg>
-            </span>{" "}
-            That Scale Businesses.
-          </motion.h1>
+        <h1
+          className="animate-rise mt-6 max-w-5xl font-display text-[40px] font-semibold leading-[1.04] text-text min-[420px]:text-[46px] sm:text-6xl lg:text-[76px] xl:text-[84px]"
+          style={{ animationDelay: "80ms" }}
+        >
+          AI Systems &amp; Websites{" "}
+          <span className="block text-text-soft">Built for Real Businesses.</span>
+        </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="mt-6 max-w-[560px] text-[16px] leading-relaxed text-[var(--ink-soft)]"
-          >
-            At Automa8, I help businesses automate operations, deploy intelligent AI agents,
-            build Voice AI systems, and engineer enterprise-grade workflow automations using OpenAI,
-            n8n, VAPI, Supabase, and LangChain.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 flex flex-wrap items-center gap-3"
-          >
-            <button
-              type="button"
-              onClick={openBooking}
-              className="group inline-flex items-center gap-2 rounded-full bg-[var(--ink)] hover:bg-[var(--forest)] text-white px-5 py-3 text-sm font-medium transition-colors"
+        <div className="mt-10 grid items-start gap-14 lg:mt-14 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+          <div className="lg:pt-2">
+            <p
+              className="animate-rise max-w-xl text-[17px] leading-relaxed text-text-soft sm:text-lg"
+              style={{ animationDelay: "160ms" }}
             >
-              Let's Build Your AI System
-              <HiOutlineArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </button>
+              I build websites, AI agents and automated business systems that help businesses sell,
+              operate and serve customers better.
+            </p>
 
-            <a
-              href="#projects"
-              className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-5 py-3 text-sm font-medium text-[var(--ink)] hover:bg-white transition-colors"
+            <div
+              className="animate-rise mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+              style={{ animationDelay: "240ms" }}
             >
-              View My Work
-            </a>
-          </motion.div>
-
-          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {metrics.map((m, i) => (
-              <motion.div
-                key={m.label}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 + i * 0.08 }}
+              <a
+                href="#work"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-text px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-white"
               >
-                <div className="font-display text-2xl sm:text-3xl font-medium text-[var(--forest)]">
-                  {m.value}
-                </div>
-                <div className="mt-1 text-[11px] uppercase tracking-wider text-[var(--ink-soft)]">
-                  {m.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                View My Work
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </a>
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-line-strong px-6 py-3.5 text-sm font-medium text-text transition-colors hover:border-white/40 hover:bg-white/[0.04]"
+              >
+                Start a Project
+                <ArrowUpRight className="h-4 w-4" aria-hidden />
+              </a>
+            </div>
 
-        {/* Right — animated dashboard */}
-        <HeroDashboard />
+            <div
+              className="animate-rise mt-12 hidden border-t border-line pt-6 lg:block"
+              style={{ animationDelay: "320ms" }}
+            >
+              <p className="text-xs uppercase tracking-[0.2em] text-text-faint">Recent work</p>
+              <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-soft">
+                {projects.map((p) => (
+                  <li key={p.slug}>
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 transition-colors hover:text-text"
+                    >
+                      {p.name}
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Visual: the actual live projects, layered */}
+          <a
+            href="#work"
+            aria-label="See selected work: Al-Madina Jewellers and Khawaja Collection"
+            className="animate-rise group relative mx-auto block w-full max-w-[640px] rounded-xl pb-10 pr-6 sm:pb-14 sm:pr-10 lg:mr-0"
+            style={{ animationDelay: "200ms" }}
+          >
+            <div
+              className="absolute inset-8 -z-10 rounded-3xl bg-brand/20 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
+              aria-hidden
+            />
+            {back && (
+              <BrowserFrame
+                domain={back.domain}
+                imageBase={back.image.base}
+                alt=""
+                sizes="(min-width: 1024px) 560px, 90vw"
+                className="absolute right-0 top-10 w-[88%] opacity-60 transition-transform duration-700 group-hover:translate-x-1 sm:top-14"
+              />
+            )}
+            {front && (
+              <BrowserFrame
+                domain={front.domain}
+                imageBase={front.image.base}
+                alt=""
+                priority
+                sizes="(min-width: 1024px) 560px, 90vw"
+                className="relative w-[88%] transition-transform duration-700 group-hover:-translate-y-1"
+              />
+            )}
+            <div className="glass absolute bottom-0 left-4 flex items-center gap-2.5 rounded-full px-4 py-2 text-xs text-text-soft sm:left-8">
+              <span className="relative flex h-2 w-2" aria-hidden>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-50 motion-reduce:hidden" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
+              </span>
+              Live client work
+            </div>
+          </a>
+        </div>
       </div>
     </section>
-  );
-}
-
-function HeroDashboard() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative aspect-[4/4.6] lg:aspect-[4/4.4] w-full"
-    >
-      {/* glow */}
-      <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-[var(--sage)]/20 via-transparent to-[var(--tangerine)]/20 blur-2xl" />
-
-      {/* main card */}
-      <div className="absolute inset-0 rounded-[28px] glass-dark p-5 overflow-hidden">
-        <div className="flex items-center justify-between text-white/70 text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-[var(--tangerine)] animate-pulse" />
-            AI ORCHESTRATOR — LIVE
-          </div>
-          <div>v2.4.1</div>
-        </div>
-
-        {/* workflow */}
-        <div className="mt-4 rounded-2xl bg-white/[0.04] border border-white/10 p-4">
-          <div className="text-[10px] uppercase tracking-widest text-white/40 mb-3">n8n workflow</div>
-          <div className="flex items-center justify-between text-white gap-2">
-            {[SiWhatsapp, TbBrandOpenai, SiLangchain, SiSupabase].map((Icon, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center">
-                <motion.div
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 2, delay: i * 0.2, repeat: Infinity }}
-                  className="h-10 w-10 grid place-items-center rounded-xl bg-white/10 border border-white/10"
-                >
-                  <Icon className="h-4 w-4" />
-                </motion.div>
-                {i < 3 && (
-                  <div className="w-full h-px bg-white/10 relative mt-[-22px] -z-0" />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-emerald-300/80">
-            <HiOutlineCheckCircle className="h-3 w-3" /> 12,483 runs · 99.7% success
-          </div>
-        </div>
-
-        {/* voice agent */}
-        <motion.div
-          animate={{ y: [0, -4, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity }}
-          className="mt-3 rounded-2xl bg-white/[0.04] border border-white/10 p-4"
-        >
-          <div className="flex items-center justify-between text-white/60 text-[10px] uppercase tracking-widest">
-            <span>VAPI Voice Agent</span>
-            <span className="text-[var(--tangerine)]">● Speaking</span>
-          </div>
-          <div className="mt-2 flex items-end gap-1 h-8">
-            {Array.from({ length: 28 }).map((_, i) => (
-              <motion.span
-                key={i}
-                animate={{ height: [`${20 + (i % 5) * 12}%`, `${60 + (i % 3) * 15}%`, `${20 + (i % 5) * 12}%`] }}
-                transition={{ duration: 1 + (i % 4) * 0.2, repeat: Infinity, delay: i * 0.04 }}
-                className="flex-1 rounded-full bg-[var(--sage)]"
-              />
-            ))}
-          </div>
-          <div className="mt-2 text-[11px] text-white/70">
-            "I've booked your table for 8 PM tomorrow at Nero. Anything else?"
-          </div>
-        </motion.div>
-
-        {/* JSON */}
-        <div className="mt-3 rounded-2xl bg-white/[0.04] border border-white/10 p-4 font-mono text-[10.5px] leading-relaxed text-white/70">
-          <div className="text-white/40">POST /agent/respond · 200 OK</div>
-          <div className="mt-1">
-            <span className="text-[var(--sage)]">{"{"}</span><br />
-            &nbsp;&nbsp;"intent": <span className="text-[var(--tangerine)]">"book_reservation"</span>,<br />
-            &nbsp;&nbsp;"confidence": <span className="text-white">0.98</span>,<br />
-            &nbsp;&nbsp;"handoff": <span className="text-white">false</span><br />
-            <span className="text-[var(--sage)]">{"}"}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* floating cards */}
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 4, repeat: Infinity }}
-        className="absolute -left-4 top-24 hidden sm:block glass-card rounded-2xl px-3.5 py-3 shadow-xl"
-      >
-        <div className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--forest)] text-white">
-            <HiOutlineSparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-widest text-[var(--ink-soft)]">Deployed</div>
-            <div className="text-xs font-semibold">RAG · 24k docs</div>
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 5, repeat: Infinity }}
-        className="absolute -right-3 bottom-16 hidden sm:block glass-card rounded-2xl px-3.5 py-3 shadow-xl"
-      >
-        <div className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--tangerine)] text-white">
-            <HiOutlineBolt className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-widest text-[var(--ink-soft)]">Automated</div>
-            <div className="text-xs font-semibold">312 tasks / day</div>
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, delay: 0.5 }}
-        className="absolute right-6 top-6 hidden md:flex glass-card rounded-full px-3 py-1.5 text-[11px] items-center gap-1.5"
-      >
-        <TbBrandOpenai className="text-[var(--forest)]" /> n8n · connected
-      </motion.div>
-    </motion.div>
   );
 }

@@ -1,80 +1,80 @@
-import { FaLinkedin, FaWhatsapp, FaEnvelope, FaGlobe } from "react-icons/fa6";
+import { FaLinkedin, FaWhatsapp } from "react-icons/fa6";
+import { Mail } from "lucide-react";
+import { contact, navLinks, whatsappLink } from "@/lib/site";
+import { Wordmark } from "./Wordmark";
 
-
-
-const nav = [
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-  { href: "#certifications", label: "Certifications" },
-  { href: "#testimonials", label: "Testimonials" },
-  { href: "#contact", label: "Contact" },
-];
 const legalLinks = [
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/terms", label: "Terms of Service" },
-  { href: "/security", label: "Security" },
   { href: "/cookies", label: "Cookie Policy" },
+];
+
+const socials = [
+  { href: contact.linkedin, label: "LinkedIn", icon: FaLinkedin, external: true },
+  { href: whatsappLink(), label: "WhatsApp", icon: FaWhatsapp, external: true },
+  { href: `mailto:${contact.email}`, label: "Email", icon: Mail, external: false },
 ];
 
 export function Footer() {
   return (
-    <footer className="border-t border-black/5 bg-white">
-      <div className="mx-auto max-w-[1280px] px-6 py-16 grid md:grid-cols-[1.4fr_1fr_1fr] gap-12">
-        <div>
-          <div className="flex items-center gap-3">
-            <img
-              src="/automa8-logo.png"
-              alt="Automa8 logo"
-              className="h-12 w-12 rounded-full bg-white object-contain p-1 ring-1 ring-black/5 shadow-sm"
-            />
-            <span className="font-display text-xl font-medium tracking-tight text-[var(--ink)]">Automa8</span>
-          </div>
-
-          <p className="mt-4 text-sm text-[var(--ink-soft)] max-w-sm leading-relaxed">
-            Building Intelligent AI Systems for Modern Businesses. AI agents, Voice AI, workflow automation, and RAG systems — engineered for measurable outcomes.
-          </p>
+    <footer className="border-t border-line bg-ink">
+      <div className="container-page grid grid-cols-2 gap-10 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
+        <div className="col-span-2 md:col-span-1">
+          <a href="/" aria-label="Automa8 home" className="inline-block rounded-md">
+            <Wordmark className="text-lg" />
+          </a>
+          <p className="mt-3 text-sm text-text-faint">AI · Web · Automation</p>
         </div>
 
-        <div>
-          <div className="text-[11px] uppercase tracking-widest text-[var(--ink-soft)]">Quick links</div>
-          <ul className="mt-4 space-y-2 text-sm">
-            {nav.map((l) => (
+        <nav aria-label="Footer">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-faint">Links</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {navLinks.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="text-[var(--ink)] hover:text-[var(--forest)]">{l.label}</a>
+                <a href={l.href} className="text-text-soft transition-colors hover:text-text">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-faint">Social</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {socials.map((s) => (
+              <li key={s.label}>
+                <a
+                  href={s.href}
+                  {...(s.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="inline-flex items-center gap-2.5 text-text-soft transition-colors hover:text-text"
+                >
+                  <s.icon className="h-4 w-4" aria-hidden />
+                  {s.label}
+                </a>
               </li>
             ))}
           </ul>
         </div>
+      </div>
 
-        <div>
-          <div className="text-[11px] uppercase tracking-widest text-[var(--ink-soft)]">Connect</div>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            <li><a className="inline-flex items-center gap-2 hover:text-[var(--forest)]" href="https://www.linkedin.com/in/umairock/" target="_blank" rel="noreferrer"><FaLinkedin /> LinkedIn</a></li>
-            <li><a className="inline-flex items-center gap-2 hover:text-[var(--forest)]" href="https://wa.me/923429900050" target="_blank" rel="noreferrer"><FaWhatsapp /> WhatsApp</a></li>
-            <li><a className="inline-flex items-center gap-2 hover:text-[var(--forest)]" href="mailto:hello@automa8.co"><FaEnvelope /> hello@automa8.co</a></li>
-            <li><a className="inline-flex items-center gap-2 hover:text-[var(--forest)]" href="https://automa8.co" target="_blank" rel="noreferrer"><FaGlobe /> automa8.co</a></li>
+      <div className="border-t border-line">
+        <div className="container-page flex flex-col gap-4 py-6 text-[13px] text-text-faint md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-1 sm:flex-row sm:gap-4">
+            <span>© 2026 Automa8. All Rights Reserved.</span>
+            <span>Built by Umair Ashraf.</span>
+          </div>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            {legalLinks.map((l) => (
+              <li key={l.href}>
+                <a href={l.href} className="transition-colors hover:text-text">
+                  {l.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
-      <div className="border-t border-black/5">
-  <div className="mx-auto max-w-[1280px] px-6 py-6 flex flex-col gap-4 sm:flex-row items-center justify-between">
-    <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-sm text-[var(--ink-soft)]">
-      <div>© 2026 Automa8. All Rights Reserved.</div>
-      <div>Designed By Umair Ashraf.</div>
-    </div>
-    <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-[var(--ink-soft)]">
-      {legalLinks.map((l) => (
-        <li key={l.href}>
-          <a href={l.href} className="hover:text-[var(--forest)]">
-            {l.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-</div>
     </footer>
   );
 }
