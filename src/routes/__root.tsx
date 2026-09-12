@@ -15,10 +15,10 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="text-sm font-semibold tracking-[0.2em] text-foreground">
+        <p className="text-sm font-bold tracking-[0.2em] text-foreground">
           AUTOMA<span className="text-brand">8</span>
         </p>
-        <h1 className="mt-8 text-7xl font-semibold tracking-[-0.04em] text-foreground">404</h1>
+        <h1 className="mt-8 text-7xl tracking-[-0.04em] text-foreground">404</h1>
         <p className="mt-3 text-base text-muted-foreground">This page doesn&apos;t exist.</p>
         <a href="/" className="btn btn-primary mt-8">
           Go home
@@ -36,7 +36,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold text-foreground">This page didn&apos;t load</h1>
+        <h1 className="text-xl text-foreground">This page didn&apos;t load</h1>
         <button
           onClick={() => {
             router.invalidate();
@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&display=swap",
       },
     ],
   }),

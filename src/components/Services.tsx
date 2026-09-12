@@ -1,22 +1,23 @@
+import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionHeader } from "./SectionHeader";
 
 const services = [
   {
-    title: "Websites & E-commerce",
-    desc: "Modern websites, online stores and custom web experiences.",
-  },
-  {
-    title: "AI Systems",
-    desc: "AI agents and intelligent customer experiences.",
+    title: "AI Agents",
+    desc: "Customer support, sales assistants and WhatsApp agents.",
   },
   {
     title: "Business Automation",
-    desc: "Automated workflows connecting business tools and operations.",
+    desc: "Workflows connecting forms, CRM, WhatsApp, email and operations.",
   },
   {
-    title: "Custom Digital Systems",
-    desc: "Websites, databases, APIs, AI and automation connected into one system.",
+    title: "Websites & E-commerce",
+    desc: "Business websites, online stores and custom web applications.",
+  },
+  {
+    title: "AI Business Systems",
+    desc: "Websites, databases, APIs, AI and automation working as one system.",
   },
 ];
 
@@ -25,27 +26,39 @@ export function Services() {
     <section
       id="services"
       aria-labelledby="services-title"
-      className="border-t border-border bg-card py-24 md:py-32 lg:py-40"
+      className="section-y border-t border-border bg-card"
     >
       <div className="container-page">
-        <SectionHeader id="services-title" eyebrow="Services" title="What we build" />
+        <SectionHeader
+          id="services-title"
+          eyebrow="Services"
+          title="More than a website."
+          description="A website is only one part of the system. We connect the experience, data, AI and automation behind it."
+        />
 
-        <ul className="mt-16 grid gap-4 md:mt-20 md:grid-cols-2 md:gap-5">
+        <ul className="mt-14 grid border-l border-t border-border md:mt-20 md:grid-cols-2">
           {services.map((s, i) => (
-            <Reveal as="li" key={s.title} delay={i * 0.05}>
-              <div className="group flex h-full flex-col rounded-3xl border border-border bg-background p-7 transition-colors duration-300 hover:border-border-strong sm:p-9 lg:p-10">
-                <span className="text-sm tabular-nums text-muted-foreground">
+            <Reveal
+              as="li"
+              key={s.title}
+              delay={i * 0.05}
+              className="group relative border-b border-r border-border p-8 transition-colors duration-300 hover:bg-background sm:p-10 lg:p-12"
+            >
+              <div className="flex items-start justify-between">
+                <span className="text-sm tabular-nums text-faint" aria-hidden>
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <div className="mt-16 lg:mt-24">
-                  <h3 className="text-2xl font-semibold tracking-[-0.02em] text-foreground sm:text-3xl">
-                    {s.title}
-                  </h3>
-                  <p className="mt-3 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-                    {s.desc}
-                  </p>
-                </div>
+                <ArrowUpRight
+                  className="h-5 w-5 text-brand opacity-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100"
+                  aria-hidden
+                />
               </div>
+              <h3 className="mt-16 text-2xl leading-tight tracking-[-0.025em] text-foreground lg:mt-24 lg:text-[28px]">
+                {s.title}
+              </h3>
+              <p className="mt-3 max-w-sm text-base leading-[1.7] text-muted-foreground">
+                {s.desc}
+              </p>
             </Reveal>
           ))}
         </ul>

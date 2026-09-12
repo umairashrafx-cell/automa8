@@ -22,9 +22,7 @@ export function LegalPage({
         >
           <ArrowLeft className="h-4 w-4" aria-hidden /> Back to home
         </a>
-        <h1 className="mt-8 text-4xl font-semibold leading-[1.05] text-foreground sm:text-5xl">
-          {title}
-        </h1>
+        <h1 className="mt-8 text-4xl leading-[1.05] text-foreground sm:text-5xl">{title}</h1>
         <p className="mt-4 text-sm text-muted-foreground">Last updated: {updated}</p>
         <div className="legal mt-10">{children}</div>
       </main>
