@@ -11,7 +11,6 @@ import { About } from "@/components/About";
 import { TechStack } from "@/components/TechStack";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
-import { BookingDialog } from "@/components/BookingDialog";
 import { SITE_URL, contact } from "@/lib/site";
 import { projects } from "@/lib/projects";
 
@@ -84,7 +83,6 @@ function Home() {
           <Contact />
         </main>
         <Footer />
-        <BookingDialog />
       </div>
     </MotionConfig>
   );

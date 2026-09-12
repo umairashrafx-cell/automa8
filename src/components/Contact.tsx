@@ -1,8 +1,7 @@
 import { useId, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowRight, CalendarDays, CheckCircle2, Loader2, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarDays, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa6";
-import { openBooking } from "@/components/BookingDialog";
 import { BUDGETS, formatEnquiry } from "@/lib/enquiry";
 import { submitEnquiry } from "@/lib/enquiry.functions";
 import { contact, whatsappLink } from "@/lib/site";
@@ -107,14 +106,18 @@ export function Contact() {
             </li>
             {contact.calLink && (
               <li>
-                <button
-                  type="button"
-                  onClick={openBooking}
+                {/* Opens Cal.com directly: booking inside an embedded iframe fails in Chrome. */}
+                <a
+                  href={`https://cal.com/${contact.calLink}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 text-text-soft transition-colors hover:text-text"
                 >
                   <CalendarDays className="h-4 w-4 text-brand" aria-hidden />
                   Prefer a call? Book a time
-                </button>
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
               </li>
             )}
           </ul>
