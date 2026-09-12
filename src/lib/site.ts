@@ -5,6 +5,11 @@ export const contact = {
   whatsappNumber: "923429900050",
   whatsappDisplay: "+92 342 9900050",
   linkedin: "https://www.linkedin.com/in/umairock/",
+  /**
+   * Cal.com booking link, the part after cal.com/ (e.g. "automa8/intro-call").
+   * Leave empty to hide the "Book a time" option.
+   */
+  calLink: "automa8/30min",
 };
 
 export function whatsappLink(message?: string) {

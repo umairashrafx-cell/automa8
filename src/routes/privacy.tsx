@@ -36,7 +36,7 @@ function PrivacyPolicy() {
 
       <h2>3. Third-Party Services</h2>
       <p>
-        We use third-party tools including Calendly (scheduling), WhatsApp (messaging), Supabase
+        We use third-party tools including Cal.com (scheduling), WhatsApp (messaging), Supabase
         (securely storing project form submissions), Resend (email notifications) and hosting
         providers to operate our website and services. These providers process data according to
         their own privacy policies.
