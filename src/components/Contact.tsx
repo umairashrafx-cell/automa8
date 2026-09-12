@@ -1,153 +1,336 @@
-import { useState, type FormEvent } from "react";
-import { motion } from "framer-motion";
-import {
-  HiOutlinePhone, HiOutlineGlobeAlt, HiOutlineEnvelope, HiOutlineMapPin, HiOutlineArrowUpRight,
-} from "react-icons/hi2";
-import { FaLinkedin, FaWhatsapp } from "react-icons/fa6";
+import { useId, useState, type FormEvent } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { ArrowRight, CalendarDays, CheckCircle2, Loader2, Mail } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa6";
 import { openBooking } from "@/components/BookingDialog";
+import { BUDGETS, formatEnquiry } from "@/lib/enquiry";
+import { submitEnquiry } from "@/lib/enquiry.functions";
+import { contact, whatsappLink } from "@/lib/site";
+import { Reveal } from "./Reveal";
 
+type Brief = { name: string; email: string; company: string; budget: string; project: string };
 
-const contacts = [
-  { icon: HiOutlinePhone, label: "Phone / WhatsApp", value: "+92 342 9900050", href: "https://wa.me/923429900050" },
-  { icon: HiOutlineEnvelope, label: "Email", value: "hello@automa8.co", href: "mailto:hello@automa8.co" },
-  { icon: HiOutlineGlobeAlt, label: "Website", value: "automa8.co", href: "https://automa8.co" },
-  { icon: FaLinkedin, label: "LinkedIn", value: "/in/umairock", href: "https://www.linkedin.com/in/umairock/" },
-  { icon: HiOutlineMapPin, label: "Location", value: "Lahore, Pakistan", href: null },
-];
+type Status =
+  | { state: "idle" }
+  | { state: "sending" }
+  | { state: "sent"; name: string }
+  | { state: "invalid"; message: string }
+  | { state: "unavailable"; brief: Brief };
 
 export function Contact() {
-  const [sent, setSent] = useState(false);
+  const send = useServerFn(submitEnquiry);
+  const [status, setStatus] = useState<Status>({ state: "idle" });
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3500);
-    (e.target as HTMLFormElement).reset();
+    if (status.state === "sending") return;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const field = (name: string) => String(data.get(name) ?? "").trim();
+    const brief: Brief = {
+      name: field("name"),
+      email: field("email"),
+      company: field("company"),
+      budget: field("budget"),
+      project: field("project"),
+    };
+
+    setStatus({ state: "sending" });
+    try {
+      const result = await send({ data: { ...brief, website: field("website") } });
+      if (result.ok) {
+        form.reset();
+        setStatus({ state: "sent", name: brief.name.split(" ")[0] ?? brief.name });
+      } else if (result.reason === "invalid") {
+        setStatus({ state: "invalid", message: result.message });
+      } else {
+        setStatus({ state: "unavailable", brief });
+      }
+    } catch {
+      setStatus({ state: "unavailable", brief });
+    }
   }
 
   return (
-    <section id="contact" className="py-24 lg:py-32">
-      <div className="mx-auto max-w-[1280px] px-6 grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-16">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-[var(--ink-soft)]">
-            <span className="h-1 w-1 rounded-full bg-[var(--tangerine)]" /> Contact
-          </div>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
-            Let's Build Your <span className="italic font-light text-[var(--forest)]">AI System.</span>
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      className="relative isolate overflow-hidden border-t border-line py-20 md:py-28"
+    >
+      <div className="bg-grid absolute inset-0 -z-10 opacity-60" aria-hidden />
+      <div
+        className="absolute bottom-[-30%] left-1/2 -z-10 h-[520px] w-[900px] max-w-[140vw] -translate-x-1/2 rounded-full bg-brand/10 blur-[140px]"
+        aria-hidden
+      />
+
+      <div className="container-page grid gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+        <Reveal className="lg:pt-4">
+          <p className="text-xs font-medium uppercase tracking-[0.28em] text-brand">Contact</p>
+          <h2
+            id="contact-title"
+            className="mt-4 font-display text-[34px] font-semibold leading-[1.08] text-text sm:text-5xl"
+          >
+            Have a business problem worth solving?
           </h2>
-          <p className="mt-4 text-[15px] leading-relaxed text-[var(--ink-soft)] max-w-md">
-            Book a consultation and I'll map your first (or next) high-leverage AI system. Free 30-minute strategy call.
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-text-soft">
+            Tell me what you&apos;re trying to build, automate or improve.
           </p>
 
-          <div className="mt-10 space-y-3">
-            {contacts.map((c) => {
-              const Inner = (
-                <div className="group flex items-center gap-4 rounded-2xl border border-black/[0.06] bg-white p-4 hover:border-[var(--sage)] transition-colors">
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--cream)]/60 text-[var(--forest)]">
-                    <c.icon className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[11px] uppercase tracking-widest text-[var(--ink-soft)]">{c.label}</div>
-                    <div className="text-sm font-medium text-[var(--ink)]">{c.value}</div>
-                  </div>
-                  {c.href && <HiOutlineArrowUpRight className="h-4 w-4 text-[var(--ink-soft)] group-hover:text-[var(--forest)]" />}
-                </div>
-              );
-              return c.href ? (
-                <a key={c.label} href={c.href} target="_blank" rel="noreferrer">{Inner}</a>
-              ) : (
-                <div key={c.label}>{Inner}</div>
-              );
-            })}
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="#start-project"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-text px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-white lg:hidden"
+            >
+              Start a Project <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+            <a
+              href={whatsappLink("Hi Umair, I'd like to talk about a project.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-line-strong px-6 py-3.5 text-sm font-medium text-text transition-colors hover:border-white/40 hover:bg-white/[0.04]"
+            >
+              <FaWhatsapp className="h-4 w-4 text-[#25D366]" aria-hidden />
+              Chat on WhatsApp
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
           </div>
 
-          <a
-            href="https://wa.me/923429900050"
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 text-sm font-medium transition-colors"
-          >
-            <FaWhatsapp className="h-4 w-4" /> Chat on WhatsApp
-          </a>
-        </div>
+          <ul className="mt-10 space-y-3 text-sm">
+            <li>
+              <a
+                href={`mailto:${contact.email}`}
+                className="inline-flex items-center gap-3 text-text-soft transition-colors hover:text-text"
+              >
+                <Mail className="h-4 w-4 text-brand" aria-hidden />
+                {contact.email}
+              </a>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={openBooking}
+                className="inline-flex items-center gap-3 text-text-soft transition-colors hover:text-text"
+              >
+                <CalendarDays className="h-4 w-4 text-brand" aria-hidden />
+                Prefer a call? Book a time
+              </button>
+            </li>
+          </ul>
+        </Reveal>
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          onSubmit={onSubmit}
-          className="glass-card rounded-[28px] p-7 lg:p-9 space-y-4"
-        >
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Name" name="name" required />
-            <Field label="Email" name="email" type="email" required />
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Company" name="company" />
-            <SelectField label="Project Type" name="projectType" options={["AI Agent", "Voice AI", "Workflow Automation", "RAG System", "AI Strategy", "Other"]} />
-          </div>
-          <SelectField label="Budget" name="budget" options={["< $2,000", "$2,000 – $5,000", "$5,000 – $15,000", "$15,000+"]} />
-          <div>
-            <label className="block text-[11px] uppercase tracking-widest text-[var(--ink-soft)] mb-1.5">Message</label>
-            <textarea
-              name="message"
-              rows={5}
-              required
-              className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm focus:outline-none focus:border-[var(--forest)] focus:ring-2 focus:ring-[var(--sage)]/30 transition"
-              placeholder="Tell me about the problem you'd like AI to solve..."
-            />
-          </div>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] hover:bg-[var(--forest)] text-white py-3.5 text-sm font-medium transition-colors"
-          >
-            {sent ? "Message sent ✓" : "Book AI Strategy Call"}
-            {!sent && <HiOutlineArrowUpRight className="h-4 w-4" />}
-          </motion.button>
-          <button
-            type="button"
-            onClick={openBooking}
-            className="w-full rounded-full border border-black/10 py-3 text-sm font-medium text-[var(--ink)] hover:border-[var(--forest)] transition-colors"
-          >
-            Or pick a time slot instantly →
-          </button>
-          <p className="text-center text-[11px] text-[var(--ink-soft)]">
-            You'll hear back within one business day.
-          </p>
+        <Reveal delay={0.1}>
+          {status.state === "sent" ? (
+            <div
+              id="start-project"
+              role="status"
+              className="glass flex min-h-[420px] flex-col items-center justify-center rounded-3xl p-8 text-center sm:p-10"
+            >
+              <CheckCircle2 className="h-10 w-10 text-brand" aria-hidden strokeWidth={1.5} />
+              <h3 className="mt-6 font-display text-2xl font-semibold text-text">
+                Thanks{status.name ? `, ${status.name}` : ""} — your brief is in.
+              </h3>
+              <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-text-soft">
+                I&apos;ll read it and reply by email. If it&apos;s urgent, you can also message me
+                on WhatsApp.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={whatsappLink(
+                    "Hi Umair, I've just sent a project brief through your website.",
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-line-strong px-5 py-3 text-sm font-medium text-text transition-colors hover:border-white/40"
+                >
+                  <FaWhatsapp className="h-4 w-4 text-[#25D366]" aria-hidden />
+                  WhatsApp
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setStatus({ state: "idle" })}
+                  className="rounded-full px-5 py-3 text-sm font-medium text-text-soft transition-colors hover:text-text"
+                >
+                  Send another brief
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form
+              id="start-project"
+              onSubmit={onSubmit}
+              aria-label="Start a project"
+              aria-busy={status.state === "sending"}
+              className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:p-10"
+            >
+              {/* Honeypot for bots — hidden from people and assistive tech */}
+              <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden>
+                <label>
+                  Website
+                  <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
 
-        </motion.form>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Name" name="name" autoComplete="name" required />
+                <Field label="Email" name="email" type="email" autoComplete="email" required />
+              </div>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                <Field label="Business / Company" name="company" autoComplete="organization" />
+                <SelectField label="Budget" optional name="budget" options={[...BUDGETS]} />
+              </div>
+              <div className="mt-5">
+                <TextArea label="What do you want to build?" name="project" required />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status.state === "sending"}
+                className="group mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-text py-4 text-sm font-medium text-ink transition-colors hover:bg-white disabled:cursor-wait disabled:opacity-70"
+              >
+                {status.state === "sending" ? (
+                  <>
+                    Sending
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  </>
+                ) : (
+                  <>
+                    Start a Project
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden
+                    />
+                  </>
+                )}
+              </button>
+
+              <div
+                aria-live="polite"
+                className="mt-4 text-center text-[13px] leading-relaxed text-text-faint"
+              >
+                {status.state === "invalid" && <p className="text-text">{status.message}</p>}
+                {status.state === "unavailable" && <UnavailableNotice brief={status.brief} />}
+                {(status.state === "idle" || status.state === "sending") && (
+                  <p>Your brief comes straight to me. I reply by email.</p>
+                )}
+              </div>
+            </form>
+          )}
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function Field(props: { label: string; name: string; type?: string; required?: boolean }) {
+/** If sending fails, keep the visitor's words and give them two one-click ways to deliver them. */
+function UnavailableNotice({ brief }: { brief: Brief }) {
+  const text = formatEnquiry(brief);
+  const mailto = `mailto:${contact.email}?subject=${encodeURIComponent(
+    `New project enquiry${brief.company ? ` — ${brief.company}` : ""}`,
+  )}&body=${encodeURIComponent(text)}`;
+
+  return (
+    <div className="rounded-xl border border-line-strong bg-ink/60 p-4 text-left">
+      <p className="text-sm text-text">The form couldn&apos;t send just now.</p>
+      <p className="mt-1">Your details are still here — send them another way in one click:</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <a
+          href={whatsappLink(`Hi Umair, I'd like to start a project.\n\n${text}`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-text px-4 py-2 text-sm font-medium text-ink hover:bg-white"
+        >
+          <FaWhatsapp className="h-4 w-4" aria-hidden /> Send on WhatsApp
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
+        <a
+          href={mailto}
+          className="inline-flex items-center gap-2 rounded-full border border-line-strong px-4 py-2 text-sm font-medium text-text hover:border-white/40"
+        >
+          <Mail className="h-4 w-4" aria-hidden /> Send by email
+        </a>
+      </div>
+    </div>
+  );
+}
+
+const inputClass =
+  "w-full rounded-xl border border-line-strong bg-ink/60 px-4 py-3 text-[15px] text-text placeholder:text-text-faint transition-colors hover:border-white/25 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30";
+
+function Label({
+  htmlFor,
+  label,
+  optional,
+}: {
+  htmlFor: string;
+  label: string;
+  optional?: boolean;
+}) {
+  return (
+    <label htmlFor={htmlFor} className="mb-2 block text-sm font-medium text-text">
+      {label}
+      {optional && <span className="ml-1.5 font-normal text-text-faint">(optional)</span>}
+    </label>
+  );
+}
+
+function Field(props: {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
+}) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-widest text-[var(--ink-soft)] mb-1.5">{props.label}</label>
+      <Label htmlFor={id} label={props.label} optional={!props.required} />
       <input
+        id={id}
         name={props.name}
-        type={props.type || "text"}
+        type={props.type ?? "text"}
         required={props.required}
-        className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm focus:outline-none focus:border-[var(--forest)] focus:ring-2 focus:ring-[var(--sage)]/30 transition"
+        autoComplete={props.autoComplete}
+        maxLength={200}
+        className={inputClass}
       />
     </div>
   );
 }
 
-function SelectField(props: { label: string; name: string; options: string[] }) {
+function TextArea(props: { label: string; name: string; required?: boolean }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-widest text-[var(--ink-soft)] mb-1.5">{props.label}</label>
-      <select
+      <Label htmlFor={id} label={props.label} />
+      <textarea
+        id={id}
         name={props.name}
-        className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm focus:outline-none focus:border-[var(--forest)] focus:ring-2 focus:ring-[var(--sage)]/30 transition"
-        defaultValue=""
-      >
-        <option value="" disabled>Select...</option>
-        {props.options.map((o) => <option key={o}>{o}</option>)}
+        rows={5}
+        required={props.required}
+        maxLength={2000}
+        placeholder="A website, an AI assistant, an automated workflow — or a problem you want solved."
+        className={`${inputClass} resize-y`}
+      />
+    </div>
+  );
+}
+
+function SelectField(props: {
+  label: string;
+  name: string;
+  options: string[];
+  optional?: boolean;
+}) {
+  const id = useId();
+  return (
+    <div>
+      <Label htmlFor={id} label={props.label} optional={props.optional} />
+      <select id={id} name={props.name} defaultValue="" className={inputClass}>
+        <option value="">Select…</option>
+        {props.options.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
       </select>
     </div>
   );
