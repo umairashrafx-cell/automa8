@@ -1,23 +1,17 @@
 import { contact, navLinks, whatsappLink } from "@/lib/site";
 import { Wordmark } from "./Wordmark";
 
-const legalLinks = [
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-  { href: "/cookies", label: "Cookies" },
-];
-
 const socials = [
   { href: contact.linkedin, label: "LinkedIn", external: true },
   { href: whatsappLink(), label: "WhatsApp", external: true },
   { href: `mailto:${contact.email}`, label: "Email", external: false },
 ];
 
-const linkClass = "text-muted-foreground transition-colors duration-200 hover:text-foreground";
+const linkClass = "text-muted-foreground transition-colors duration-200 hover:text-brand";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-t border-border bg-card">
       <div className="container-page grid grid-cols-2 gap-10 py-16 md:grid-cols-[2fr_1fr_1fr] md:py-20">
         <div className="col-span-2 md:col-span-1">
           <a href="/" aria-label="Automa8 home" className="inline-block rounded-md">
@@ -54,18 +48,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border">
-        <div className="container-page flex flex-col gap-3 py-6 text-[13px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 Automa8</span>
-          <ul className="flex gap-5">
-            {legalLinks.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} className={linkClass}>
-                  {l.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="container-page py-6 text-[13px] text-muted-foreground">© 2026 Automa8</p>
       </div>
     </footer>
   );

@@ -2,13 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { MotionConfig } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { Intro } from "@/components/Intro";
 import { Work } from "@/components/Work";
 import { Services } from "@/components/Services";
 import { Process } from "@/components/Process";
-import { SystemDiagram } from "@/components/SystemDiagram";
 import { About } from "@/components/About";
-import { TechStack } from "@/components/TechStack";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { SITE_URL, contact } from "@/lib/site";
@@ -47,7 +44,7 @@ export const Route = createFileRoute("/")({
       { property: "og:image:height", content: "630" },
       {
         property: "og:image:alt",
-        content: "Automa8 — We build digital systems for businesses.",
+        content: "Automa8 — Websites, AI & Automation for Real Businesses.",
       },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
@@ -73,13 +70,10 @@ function Home() {
         <Navbar />
         <main id="main">
           <Hero />
-          <Intro />
           <Work />
           <Services />
           <Process />
-          <SystemDiagram />
           <About />
-          <TechStack />
           <Contact />
         </main>
         <Footer />

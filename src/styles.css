@@ -40,6 +40,8 @@
   /* Automa8 brand accent — used sparingly (markers, focus, small details). */
   --color-brand: var(--brand);
   --color-border-strong: var(--border-strong);
+  /* #888 — decorative only (step numbers, separators); too light for essential small text. */
+  --color-faint: var(--faint);
 }
 
 :root {
@@ -55,16 +57,17 @@
   --secondary-foreground: #111111;
   --muted: #f1f1ee;
   --muted-foreground: #666666;
+  --faint: #888888;
   --accent: #f1f1ee;
   --accent-foreground: #111111;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
-  --border: #e8e8e5;
-  --border-strong: #d4d4cf;
-  --input: #e8e8e5;
-  /* The logo's blue, deepened so it holds contrast on warm white. */
-  --brand: #1f6fd6;
-  --ring: #1f6fd6;
+  --border: #e6e6e2;
+  --border-strong: #cfcfca;
+  --input: #e6e6e2;
+  /* Brand blue — dots, links, arrows, hover and selected states only. */
+  --brand: #2563eb;
+  --ring: #2563eb;
   --radius: 1rem;
 
   color-scheme: light;
@@ -100,7 +103,8 @@
   h2,
   h3,
   h4 {
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    letter-spacing: -0.035em;
     text-wrap: balance;
   }
 
@@ -142,30 +146,58 @@
   color: var(--muted-foreground);
 }
 
-/* Premium buttons: 250ms transitions, arrow nudges on hover. */
+/* Major section rhythm: 64px mobile, 80px tablet, 120px desktop. */
+@utility section-y {
+  padding-block: 64px;
+  @media (min-width: 768px) {
+    padding-block: 80px;
+  }
+  @media (min-width: 1024px) {
+    padding-block: 120px;
+  }
+}
+
+/* Project screenshots: thin border, 18px radius, barely-there shadow. */
+@utility shot {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background-color: var(--card);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Pill buttons, 50px tall. Hover lifts 1px with a very soft shadow. */
 @utility btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 9999px;
-  padding: 0.875rem 1.5rem;
+  height: 50px;
+  border-radius: 999px;
+  padding-inline: 22px;
   font-size: 15px;
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   transition:
+    transform 250ms ease,
+    box-shadow 250ms ease,
     background-color 250ms ease,
     border-color 250ms ease,
     color 250ms ease;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.18);
+  }
+  &:disabled {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 @utility btn-primary {
   background-color: var(--primary);
   color: var(--primary-foreground);
-  &:hover {
-    background-color: #2a2a2a;
-  }
 }
 
 @utility btn-secondary {
@@ -214,7 +246,7 @@
     margin-bottom: 0.75rem;
     color: var(--foreground);
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.01em;
   }
   & p,

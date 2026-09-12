@@ -53,19 +53,19 @@ export function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="border-t border-border bg-card py-24 md:py-32 lg:py-40"
+      className="section-y border-t border-border"
     >
       <div className="container-page grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
         <Reveal>
           <p className="eyebrow">Contact</p>
           <h2
             id="contact-title"
-            className="mt-5 text-4xl font-semibold leading-[1.05] text-foreground sm:text-5xl lg:text-6xl"
+            className="mt-4 text-[34px] leading-[1.08] text-foreground sm:text-5xl lg:text-[44px] xl:text-[52px]"
           >
-            Have something worth building?
+            Have a business problem worth solving?
           </h2>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-            Tell us what you&apos;re trying to build, improve or automate.
+          <p className="mt-5 max-w-md text-base leading-[1.7] text-muted-foreground md:text-lg">
+            Tell me what you&apos;re trying to build, automate or improve.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -95,7 +95,7 @@ export function Contact() {
             <li>
               <a
                 href={`mailto:${contact.email}`}
-                className="text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                className="text-muted-foreground transition-colors duration-200 hover:text-brand"
               >
                 {contact.email}
               </a>
@@ -107,7 +107,7 @@ export function Contact() {
                   href={`https://cal.com/${contact.calLink}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                  className="group inline-flex items-center gap-1 text-muted-foreground transition-colors duration-200 hover:text-brand"
                 >
                   Prefer a call? Book a time
                   <ArrowUpRight
@@ -126,14 +126,14 @@ export function Contact() {
             <div
               id="start-project"
               role="status"
-              className="flex min-h-[460px] flex-col items-center justify-center rounded-3xl border border-border bg-background p-8 text-center sm:p-10"
+              className="flex min-h-[460px] flex-col items-center justify-center rounded-3xl border border-border bg-card p-8 text-center sm:p-10"
             >
               <CheckCircle2 className="h-10 w-10 text-foreground" aria-hidden strokeWidth={1.25} />
-              <h3 className="mt-6 text-2xl font-semibold tracking-[-0.02em] text-foreground">
+              <h3 className="mt-6 text-2xl tracking-[-0.02em] text-foreground">
                 Thanks{status.name ? `, ${status.name}` : ""} — your brief is in.
               </h3>
               <p className="mt-3 max-w-sm text-base leading-relaxed text-muted-foreground">
-                We&apos;ll read it and reply by email. If it&apos;s urgent, message us on WhatsApp.
+                I&apos;ll read it and reply by email. If it&apos;s urgent, message me on WhatsApp.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -160,7 +160,7 @@ export function Contact() {
               onSubmit={onSubmit}
               aria-label="Start a project"
               aria-busy={status.state === "sending"}
-              className="relative overflow-hidden rounded-3xl border border-border bg-background p-6 sm:p-8 lg:p-10"
+              className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8 lg:p-10"
             >
               {/* Honeypot for bots — hidden from people and assistive tech */}
               <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden>
@@ -185,7 +185,7 @@ export function Contact() {
               <button
                 type="submit"
                 disabled={status.state === "sending"}
-                className="btn btn-primary group mt-7 w-full py-4! disabled:cursor-wait disabled:opacity-70"
+                className="btn btn-primary group mt-7 h-[52px]! w-full disabled:cursor-wait disabled:opacity-70"
               >
                 {status.state === "sending" ? (
                   <>
@@ -210,7 +210,16 @@ export function Contact() {
                 {status.state === "invalid" && <p className="text-foreground">{status.message}</p>}
                 {status.state === "unavailable" && <UnavailableNotice brief={status.brief} />}
                 {(status.state === "idle" || status.state === "sending") && (
-                  <p>Your brief comes straight to our inbox. We reply by email.</p>
+                  <p>
+                    Your brief comes straight to me. See the{" "}
+                    <a
+                      href="/privacy"
+                      className="underline decoration-border-strong underline-offset-2 hover:text-brand hover:decoration-brand"
+                    >
+                      privacy policy
+                    </a>
+                    .
+                  </p>
                 )}
               </div>
             </form>
@@ -237,12 +246,12 @@ function UnavailableNotice({ brief }: { brief: Brief }) {
           href={whatsappLink(`Hi, I'd like to start a project.\n\n${text}`)}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-primary px-4! py-2.5! text-sm!"
+          className="btn btn-primary h-10! px-4! text-sm!"
         >
           Send on WhatsApp
           <span className="sr-only">(opens in a new tab)</span>
         </a>
-        <a href={mailto} className="btn btn-secondary px-4! py-2.5! text-sm!">
+        <a href={mailto} className="btn btn-secondary h-10! px-4! text-sm!">
           Send by email
         </a>
       </div>
@@ -251,7 +260,7 @@ function UnavailableNotice({ brief }: { brief: Brief }) {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-border bg-card px-4 py-3 text-base text-foreground placeholder:text-muted-foreground/70 transition-colors duration-200 hover:border-border-strong focus:border-foreground focus:outline-none focus:ring-4 focus:ring-foreground/5";
+  "w-full rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground placeholder:text-muted-foreground/70 transition-colors duration-200 hover:border-border-strong focus:border-foreground focus:outline-none focus:ring-4 focus:ring-foreground/5";
 
 function Label({
   htmlFor,
