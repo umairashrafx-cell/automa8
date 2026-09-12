@@ -6,7 +6,7 @@ import { Intro } from "@/components/Intro";
 import { Work } from "@/components/Work";
 import { Services } from "@/components/Services";
 import { Process } from "@/components/Process";
-import { Differentiator } from "@/components/Differentiator";
+import { SystemDiagram } from "@/components/SystemDiagram";
 import { About } from "@/components/About";
 import { TechStack } from "@/components/TechStack";
 import { Contact } from "@/components/Contact";
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/")({
       { property: "og:image:height", content: "630" },
       {
         property: "og:image:alt",
-        content: "Automa8 — AI Systems & Websites Built for Real Businesses",
+        content: "Automa8 — We build digital systems for businesses.",
       },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
@@ -66,7 +66,7 @@ function Home() {
       <div className="min-h-screen bg-background text-foreground">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-text focus:px-4 focus:py-2 focus:text-sm focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:text-primary-foreground"
         >
           Skip to content
         </a>
@@ -77,7 +77,7 @@ function Home() {
           <Work />
           <Services />
           <Process />
-          <Differentiator />
+          <SystemDiagram />
           <About />
           <TechStack />
           <Contact />

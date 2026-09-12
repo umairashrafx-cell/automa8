@@ -6,26 +6,28 @@ export function SectionHeader({
   title,
   description,
   id,
-  align = "left",
+  className = "",
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: ReactNode;
   description?: ReactNode;
   /** id for the heading, so the section can reference it with aria-labelledby. */
   id?: string;
-  align?: "left" | "center";
+  className?: string;
 }) {
   return (
-    <Reveal className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
-      <p className="text-xs font-medium uppercase tracking-[0.28em] text-brand">{eyebrow}</p>
+    <Reveal className={`max-w-3xl ${className}`}>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
       <h2
         id={id}
-        className="mt-4 font-display text-3xl font-semibold leading-[1.1] text-text sm:text-4xl lg:text-5xl"
+        className={`${eyebrow ? "mt-5" : ""} text-4xl font-semibold leading-[1.05] text-foreground sm:text-5xl lg:text-6xl`}
       >
         {title}
       </h2>
       {description && (
-        <p className="mt-5 text-base leading-relaxed text-text-soft sm:text-lg">{description}</p>
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          {description}
+        </p>
       )}
     </Reveal>
   );

@@ -1,8 +1,6 @@
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
-    <span
-      className={`font-display text-[17px] font-semibold tracking-[0.18em] text-text ${className}`}
-    >
+    <span className={`text-[17px] font-semibold tracking-[0.2em] text-foreground ${className}`}>
       AUTOMA<span className="text-brand">8</span>
     </span>
   );

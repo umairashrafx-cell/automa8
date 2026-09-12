@@ -1,12 +1,11 @@
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { projects, type Project } from "@/lib/projects";
-import { BrowserFrame } from "./BrowserFrame";
 import { Reveal } from "./Reveal";
 import { SectionHeader } from "./SectionHeader";
 
 export function Work() {
   return (
-    <section id="work" aria-labelledby="work-title" className="py-20 md:py-28">
+    <section id="work" aria-labelledby="work-title" className="py-24 md:py-32 lg:py-40">
       <div className="container-page">
         <SectionHeader
           id="work-title"
@@ -15,111 +14,75 @@ export function Work() {
           description="Real websites and digital systems built for real businesses."
         />
 
-        <div className="mt-14 space-y-8 md:mt-20 md:space-y-10">
+        <div className="mt-16 space-y-24 md:mt-24 md:space-y-32">
           {projects.map((p, i) => (
-            <ProjectCard key={p.slug} project={p} index={i} />
+            <ProjectBlock key={p.slug} project={p} index={i} />
           ))}
         </div>
-
-        <Reveal className="mt-10 flex flex-col items-start justify-between gap-4 rounded-2xl border border-line px-6 py-6 sm:flex-row sm:items-center md:px-8">
-          <div>
-            <h3 className="font-display text-lg font-semibold text-text">
-              Built for real businesses.
-            </h3>
-            <p className="mt-1 text-sm text-text-soft">
-              No mock-ups or demo projects. Both sites are live — open them and judge the work for
-              yourself.
-            </p>
-          </div>
-          <a
-            href="#contact"
-            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-text hover:text-brand"
-          >
-            Start a Project <ArrowUpRight className="h-4 w-4" aria-hidden />
-          </a>
-        </Reveal>
       </div>
     </section>
   );
 }
 
-function ProjectCard({ project: p, index }: { project: Project; index: number }) {
-  const flip = index % 2 === 1;
+function ProjectBlock({ project: p, index }: { project: Project; index: number }) {
+  const number = String(index + 1).padStart(2, "0");
 
   return (
-    <Reveal
-      as="article"
-      className="group overflow-hidden rounded-3xl border border-line bg-surface transition-colors duration-500 hover:border-line-strong"
-    >
-      <div
-        className={`grid ${flip ? "xl:grid-cols-[1fr_1.25fr] xl:[&>*:first-child]:order-2" : "xl:grid-cols-[1.25fr_1fr]"}`}
+    <Reveal as="article" aria-labelledby={`${p.slug}-title`}>
+      <a
+        href={p.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block rounded-3xl focus-visible:outline-offset-8"
       >
-        {/* Screenshot */}
-        <div className="relative flex items-center overflow-hidden bg-gradient-to-br from-surface-2 to-ink p-5 sm:p-8 lg:p-12 xl:p-10">
-          <div className="absolute inset-0 bg-brand/[0.04]" aria-hidden />
-          <BrowserFrame
-            domain={p.domain}
-            imageBase={p.image.base}
-            alt={p.image.alt}
-            sizes="(min-width: 1280px) 620px, 92vw"
-            className="relative w-full"
-            imgClassName="transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
-          />
-        </div>
-
-        {/* Details */}
-        <div className="flex flex-col p-6 sm:p-8 lg:p-12 xl:p-10">
-          <div className="flex items-center gap-3 text-xs text-text-faint">
-            <span className="font-display font-semibold text-brand">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="h-px w-6 bg-line-strong" aria-hidden />
-            <span className="uppercase tracking-[0.16em]">{p.category}</span>
-          </div>
-
-          <h3 className="mt-5 font-display text-2xl font-semibold uppercase tracking-[0.04em] text-text sm:text-3xl">
-            {p.name}
-          </h3>
-          <p className="mt-3 text-lg leading-snug text-text">{p.tagline}</p>
-          <p className="mt-3 text-[15px] leading-relaxed text-text-soft">{p.description}</p>
-
-          <ul
-            className="mt-6 grid gap-2.5 md:grid-cols-2 md:gap-x-8 xl:grid-cols-1"
-            aria-label={`${p.name} features`}
-          >
-            {p.features.map((f) => (
-              <li key={f} className="flex gap-2.5 text-sm leading-snug text-text-soft">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden />
-                {f}
-              </li>
-            ))}
-          </ul>
-
-          <ul className="mt-6 flex flex-wrap gap-2" aria-label="Tags">
-            {p.tags.map((t) => (
-              <li
-                key={t}
-                className="rounded-full border border-line px-3 py-1 text-xs text-text-soft"
-              >
-                {t}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-8 xl:mt-auto xl:pt-8">
-            <a
-              href={p.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-text px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-white"
+        {/* Title row */}
+        <div className="flex flex-col gap-4 border-t border-border-strong pt-6 md:flex-row md:items-baseline md:justify-between md:gap-10 md:pt-8">
+          <div className="flex items-baseline gap-5 md:gap-8">
+            <span className="text-sm tabular-nums text-muted-foreground">{number}</span>
+            <h3
+              id={`${p.slug}-title`}
+              className="text-3xl font-semibold leading-none tracking-[-0.03em] text-foreground sm:text-4xl lg:text-5xl"
             >
-              View Live Website
-              <ArrowUpRight className="h-4 w-4" aria-hidden />
-              <span className="sr-only">: {p.name} (opens in a new tab)</span>
-            </a>
+              {p.name}
+            </h3>
+          </div>
+          <p className="pl-10 text-sm text-muted-foreground md:pl-0 md:text-right">{p.category}</p>
+        </div>
+
+        {/* Large screenshot */}
+        <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card p-2 transition-colors duration-300 group-hover:border-border-strong sm:p-3 md:mt-10 md:rounded-3xl lg:p-4">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted sm:aspect-[1440/860] md:rounded-2xl">
+            <img
+              src={`${p.image.base}-800.jpg`}
+              srcSet={`${p.image.base}-800.jpg 800w, ${p.image.base}-1440.jpg 1440w`}
+              sizes="(min-width: 1280px) 1184px, 94vw"
+              width={1440}
+              height={860}
+              loading="lazy"
+              decoding="async"
+              alt={p.image.alt}
+              className="h-full w-full object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+            />
           </div>
         </div>
-      </div>
+
+        {/* Description + CTA */}
+        <div className="mt-8 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-16">
+          <p className="max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {p.description}
+          </p>
+          <span className="inline-flex shrink-0 items-center gap-2 text-[15px] font-medium text-foreground">
+            <span className="border-b border-foreground/30 pb-0.5 transition-colors duration-300 group-hover:border-foreground">
+              View Website
+            </span>
+            <ArrowUpRight
+              className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              aria-hidden
+            />
+            <span className="sr-only">(opens {p.domain} in a new tab)</span>
+          </span>
+        </div>
+      </a>
     </Reveal>
   );
 }
