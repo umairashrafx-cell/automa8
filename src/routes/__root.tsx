@@ -15,10 +15,14 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <p className="text-sm font-bold tracking-[0.2em] text-foreground">
-          AUTOMA<span className="text-brand">8</span>
-        </p>
-        <h1 className="mt-8 text-7xl tracking-[-0.04em] text-foreground">404</h1>
+        <img
+          src="/logo/automa8-wordmark-light.svg"
+          alt="Automa8"
+          width={150}
+          height={29}
+          className="mx-auto h-[29px] w-auto"
+        />
+        <h1 className="mt-8 text-7xl tracking-[-0.035em] text-foreground">404</h1>
         <p className="mt-3 text-base text-muted-foreground">This page doesn&apos;t exist.</p>
         <a href="/" className="btn btn-primary mt-8">
           Go home
@@ -63,7 +67,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Automa8 builds AI systems, modern websites and business automation for real businesses.",
       },
       { name: "author", content: "Umair Ashraf" },
-      { name: "theme-color", content: "#f8f8f6" },
+      { name: "theme-color", content: "#f6f8f9" },
       { property: "og:site_name", content: "Automa8" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
@@ -72,8 +76,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/favicon-96x96.png", sizes: "96x96" },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon/favicon.svg" },
+      { rel: "icon", type: "image/png", href: "/favicon/favicon-32.png", sizes: "32x32" },
+      { rel: "icon", type: "image/png", href: "/favicon/favicon-96.png", sizes: "96x96" },
       { rel: "shortcut icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },
@@ -81,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap",
       },
     ],
   }),

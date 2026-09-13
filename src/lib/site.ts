@@ -7,7 +7,7 @@ export const contact = {
   linkedin: "https://www.linkedin.com/in/umairock/",
   /**
    * Cal.com booking link, the part after cal.com/ (e.g. "automa8/intro-call").
-   * Leave empty to hide the "Book a time" option.
+   * Leave empty to hide the "Book a call" option.
    */
   calLink: "automa8/30min",
 };
@@ -17,10 +17,43 @@ export function whatsappLink(message?: string) {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-/** Absolute-from-root hashes so the same links work on the legal pages too. */
 export const navLinks = [
-  { href: "/#work", label: "Work" },
-  { href: "/#services", label: "Services" },
-  { href: "/#about", label: "About" },
-  { href: "/#contact", label: "Contact" },
-];
+  { to: "/projects", label: "Projects" },
+  { to: "/services", label: "Services" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+] as const;
+
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
+
+/** Title, description, Open Graph, Twitter and canonical tags for a page. */
+export function pageHead({
+  title,
+  description,
+  path,
+  image = DEFAULT_IMAGE,
+  imageAlt = "Automa8 — Websites, AI & Automation for Real Businesses.",
+}: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  imageAlt?: string;
+}) {
+  const url = `${SITE_URL}${path}`;
+  return {
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:url", content: url },
+      { property: "og:image", content: image },
+      { property: "og:image:alt", content: imageAlt },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: image },
+    ],
+    links: [{ rel: "canonical", href: url }],
+  };
+}
