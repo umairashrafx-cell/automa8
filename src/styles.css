@@ -4,15 +4,25 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --font-sans:
-    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    sans-serif;
-  --font-display: var(--font-sans);
+/* ==========================================================================
+   Automa8 brand — "Signal on Slate", light surface.
+   Source: Automa8 Brand Kit v1.0 (automa8-tokens.css). The kit is dark-first;
+   this site uses its Paper surface with Slate text, as the kit specifies for
+   light backgrounds: bright Signal teal for fills only, Signal Ink for teal
+   text, Copper as a single small highlight.
+   ========================================================================== */
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+@theme inline {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans:
+    "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --ease-flow: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 18px;
   --radius-xl: 20px;
   --radius-2xl: 24px;
   --radius-3xl: 28px;
@@ -36,39 +46,50 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
-  /* Automa8 brand accent — used sparingly (markers, focus, small details). */
-  --color-brand: var(--brand);
   --color-border-strong: var(--border-strong);
-  /* #888 — decorative only (step numbers, separators); too light for essential small text. */
+
+  /* Brand palette */
+  --color-slate: #0e161f;
+  --color-ink: #0a1017;
+  --color-mist: #e8eff4;
+  --color-paper: #f6f8f9;
+  --color-signal: #00c9a7;
+  --color-signal-deep: #00a187;
+  --color-signal-ink: #00705e;
+  --color-copper: #e0913f;
+  --color-alert: #f05a5a;
+
+  /* Teal for text on light surfaces (Signal Ink — AA safe). Links, arrows, active states. */
+  --color-brand: var(--brand);
+  /* Brand Muted #8CA0AF — decorative only on light (numbers, separators). */
   --color-faint: var(--faint);
 }
 
 :root {
-  --background: #f8f8f6;
-  --foreground: #111111;
+  --background: #f6f8f9; /* Paper */
+  --foreground: #0e161f; /* Slate */
   --card: #ffffff;
-  --card-foreground: #111111;
+  --card-foreground: #0e161f;
   --popover: #ffffff;
-  --popover-foreground: #111111;
-  --primary: #111111;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f1ee;
-  --secondary-foreground: #111111;
-  --muted: #f1f1ee;
-  --muted-foreground: #666666;
-  --faint: #888888;
-  --accent: #f1f1ee;
-  --accent-foreground: #111111;
-  --destructive: oklch(0.577 0.245 27.325);
+  --popover-foreground: #0e161f;
+  --primary: #00c9a7; /* Signal */
+  --primary-foreground: #04120e;
+  --secondary: #e8eff4; /* Mist */
+  --secondary-foreground: #0e161f;
+  --muted: #e8eff4;
+  /* Slate-grey secondary text, readable on Paper (≈6:1). */
+  --muted-foreground: #52606b;
+  --faint: #8ca0af;
+  --accent: #e8eff4;
+  --accent-foreground: #0e161f;
+  --destructive: #f05a5a;
   --destructive-foreground: #ffffff;
-  --border: #e6e6e2;
-  --border-strong: #cfcfca;
-  --input: #e6e6e2;
-  /* Brand blue — dots, links, arrows, hover and selected states only. */
-  --brand: #2563eb;
-  --ring: #2563eb;
-  --radius: 1rem;
+  --border: #dfe6eb;
+  --border-strong: #c5d0d8;
+  --input: #dfe6eb;
+  --brand: #00705e; /* Signal Ink */
+  --ring: #00705e;
+  --radius: 10px;
 
   color-scheme: light;
 }
@@ -93,6 +114,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    line-height: 1.62;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -103,9 +125,15 @@
   h2,
   h3,
   h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  h1 {
     font-weight: 700;
     letter-spacing: -0.035em;
-    text-wrap: balance;
   }
 
   p {
@@ -113,10 +141,11 @@
   }
 
   ::selection {
-    background: #111111;
-    color: #ffffff;
+    background: #0e161f;
+    color: #e8eff4;
   }
 
+  /* Signal Ink rather than bright teal, so the focus ring holds 3:1 on Paper. */
   :focus-visible {
     outline: 2px solid var(--brand);
     outline-offset: 3px;
@@ -157,37 +186,41 @@
   }
 }
 
-/* Project screenshots: thin border, 18px radius, barely-there shadow. */
+/* Project screenshots: thin border, the brand's 18px radius, barely-there shadow. */
 @utility shot {
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 18px;
   background-color: var(--card);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 40px rgba(14, 22, 31, 0.06);
 }
 
-/* Pill buttons, 50px tall. Hover lifts 1px with a very soft shadow. */
+/* Brand buttons: 10px radius, Space Grotesk 600. Hover lifts 1px with a soft shadow. */
 @utility btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 50px;
-  border-radius: 999px;
+  height: 48px;
+  border-radius: 10px;
   padding-inline: 22px;
+  font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
   transition:
-    transform 250ms ease,
-    box-shadow 250ms ease,
-    background-color 250ms ease,
-    border-color 250ms ease,
-    color 250ms ease;
+    transform 220ms var(--ease-flow),
+    box-shadow 220ms var(--ease-flow),
+    background-color 220ms var(--ease-flow),
+    border-color 220ms var(--ease-flow),
+    color 220ms var(--ease-flow);
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 8px 20px -12px rgba(14, 22, 31, 0.3);
+  }
+  &:active {
+    transform: translateY(0);
   }
   &:disabled {
     transform: none;
@@ -195,9 +228,13 @@
   }
 }
 
+/* Signal teal fill with near-black text, as in the brand kit. */
 @utility btn-primary {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
+  background-color: #00c9a7;
+  color: #04120e;
+  &:hover {
+    background-color: #00a187;
+  }
 }
 
 @utility btn-secondary {
@@ -205,7 +242,7 @@
   color: var(--foreground);
   border: 1px solid var(--border-strong);
   &:hover {
-    border-color: var(--foreground);
+    border-color: #00a187;
   }
 }
 
@@ -222,7 +259,7 @@
 }
 
 @utility animate-rise {
-  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise 0.8s var(--ease-flow) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -246,7 +283,7 @@
     margin-bottom: 0.75rem;
     color: var(--foreground);
     font-size: 1.125rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.01em;
   }
   & p,
@@ -258,12 +295,12 @@
     padding-left: 1.25rem;
   }
   & a {
-    color: var(--foreground);
+    color: var(--brand);
     text-decoration: underline;
     text-decoration-color: var(--border-strong);
     text-underline-offset: 3px;
   }
   & a:hover {
-    text-decoration-color: var(--foreground);
+    text-decoration-color: var(--brand);
   }
 }
