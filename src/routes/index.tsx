@@ -22,7 +22,7 @@ const structuredData = {
   areaServed: "Worldwide",
   address: { "@type": "PostalAddress", addressCountry: "PK" },
   founder: { "@type": "Person", name: "Umair Ashraf", sameAs: [contact.linkedin] },
-  sameAs: [contact.linkedin],
+  sameAs: [contact.linkedin, contact.instagram, contact.facebook],
   subjectOf: projects.map((p) => ({ "@type": "WebSite", name: p.name, url: p.url })),
 };
 
