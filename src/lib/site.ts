@@ -5,6 +5,9 @@ export const contact = {
   whatsappNumber: "923429900050",
   whatsappDisplay: "+92 342 9900050",
   linkedin: "https://www.linkedin.com/in/umairock/",
+  instagram: "https://www.instagram.com/autom.a8/",
+  facebook: "https://www.facebook.com/automa8/",
+  discord: "https://discord.gg/pg7cTK8ek",
   /**
    * Cal.com booking link, the part after cal.com/ (e.g. "automa8/intro-call").
    * Leave empty to hide the "Book a call" option.
