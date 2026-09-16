@@ -1,13 +1,7 @@
 import { z } from "zod";
+import { BUDGET_KEYS, COUNTRY_CODES, budgetSummary, getCountry } from "./budget";
 
 /** Shared by the contact form and the server so both validate the same way. */
-export const BUDGETS = [
-  "Not sure yet",
-  "Under $2,000",
-  "$2,000 – $5,000",
-  "$5,000 – $15,000",
-  "$15,000+",
-] as const;
 
 export const PROJECT_TYPES = [
   "Website",
@@ -35,7 +29,9 @@ export const enquirySchema = z.object({
     .array(z.enum(PROJECT_TYPES))
     .min(1, "Choose what you’d like to build.")
     .max(PROJECT_TYPES.length),
-  budget: z.union([z.enum(BUDGETS), z.literal("")]).default(""),
+  country: z.enum(COUNTRY_CODES, { message: "Please choose your country." }),
+  /** A key from BUDGET_TIERS; shown to the visitor in their country's currency. */
+  budget: z.union([z.enum(BUDGET_KEYS), z.literal("")]).default(""),
   timeline: z.union([z.enum(TIMELINES), z.literal("")]).default(""),
   currentSite: z.string().trim().max(300).default(""),
   project: z.string().trim().min(1, "Tell me a little about the project.").max(3000),
@@ -55,6 +51,7 @@ export function formatEnquiry(e: {
   email: string;
   company: string;
   services: readonly string[];
+  country: string;
   budget: string;
   timeline: string;
   currentSite: string;
@@ -70,13 +67,16 @@ export function formatEnquiry(e: {
 /** The project details picked in the form, as label/value pairs (empty ones left out). */
 export function enquiryDetails(e: {
   services: readonly string[];
+  country: string;
   budget: string;
   timeline: string;
   currentSite: string;
 }): [string, string][] {
   const rows: [string, string][] = [];
   if (e.services.length) rows.push(["Needs", e.services.join(", ")]);
-  if (e.budget) rows.push(["Budget", e.budget]);
+  const country = getCountry(e.country)?.[1];
+  if (country) rows.push(["Country", country]);
+  if (e.budget) rows.push(["Budget", budgetSummary(e.budget, e.country)]);
   if (e.timeline) rows.push(["Timeline", e.timeline]);
   if (e.currentSite) rows.push(["Current website / app", e.currentSite]);
   return rows;

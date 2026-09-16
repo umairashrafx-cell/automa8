@@ -23,15 +23,13 @@ export async function saveEnquiry(e: Enquiry): Promise<void> {
       name: e.name,
       email: e.email,
       company: e.company,
-      budget: e.budget,
-      // The table has no columns for these yet, so they lead the stored project text.
-      project: [
-        ...enquiryDetails({ ...e, budget: "" }).map(([k, v]) => `${k}: ${v}`),
-        "",
-        e.project,
-      ]
+      // The budget column only accepts the old fixed labels, and there are no columns for country,
+      // needs, timeline or current site, so these details lead the stored project text instead
+      // (the column allows up to 3000 characters).
+      budget: "",
+      project: [...enquiryDetails(e).map(([k, v]) => `${k}: ${v}`), "", e.project]
         .join("\n")
-        .trim(),
+        .slice(0, 3000),
       source: "automa8.co",
     }),
   });

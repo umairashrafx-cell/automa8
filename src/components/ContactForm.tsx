@@ -1,8 +1,9 @@
-import { useId, useState, type FormEvent } from "react";
+import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { BUDGETS, PROJECT_TYPES, TIMELINES, formatEnquiry } from "@/lib/enquiry";
+import { BUDGET_TIERS, COUNTRIES, budgetLabel, currencyFor } from "@/lib/budget";
+import { PROJECT_TYPES, TIMELINES, formatEnquiry } from "@/lib/enquiry";
 import { submitEnquiry } from "@/lib/enquiry.functions";
 import { contact, whatsappLink } from "@/lib/site";
 
@@ -11,6 +12,7 @@ type Brief = {
   email: string;
   company: string;
   services: string[];
+  country: string;
   budget: string;
   timeline: string;
   currentSite: string;
@@ -28,6 +30,8 @@ type Status =
 export function ContactForm() {
   const send = useServerFn(submitEnquiry);
   const [status, setStatus] = useState<Status>({ state: "idle" });
+  const [country, setCountry] = useState("");
+  const currency = currencyFor(country);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,6 +44,7 @@ export function ContactForm() {
       email: field("email"),
       company: field("company"),
       services: data.getAll("services").map(String),
+      country: field("country"),
       budget: field("budget"),
       timeline: field("timeline"),
       currentSite: field("currentSite"),
@@ -61,6 +66,7 @@ export function ContactForm() {
       const result = await send({ data: { ...brief, website: field("website") } });
       if (result.ok) {
         form.reset();
+        setCountry("");
         setStatus({ state: "sent", name: brief.name.split(" ")[0] ?? brief.name });
       } else if (result.reason === "invalid") {
         setStatus({ state: "invalid", message: result.message });
@@ -132,16 +138,37 @@ export function ContactForm() {
       </div>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <Field label="Company" name="company" autoComplete="organization" />
+        <SelectField
+          label="Country"
+          name="country"
+          required
+          value={country}
+          onChange={setCountry}
+          placeholder="Select country…"
+          options={COUNTRIES.map(([code, name]) => ({ value: code, label: name }))}
+        />
+      </div>
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <SelectField
+          label={`Budget (${currency})`}
+          optional
+          name="budget"
+          options={BUDGET_TIERS.map((t) => ({ value: t.key, label: budgetLabel(t.key, currency) }))}
+        />
+        <SelectField
+          label="Timeline"
+          optional
+          name="timeline"
+          options={TIMELINES.map((t) => ({ value: t, label: t }))}
+        />
+      </div>
+      <div className="mt-5">
         <Field
           label="Current website or app"
           name="currentSite"
           autoComplete="url"
           placeholder="Link, if you have one"
         />
-      </div>
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <SelectField label="Budget" optional name="budget" options={[...BUDGETS]} />
-        <SelectField label="Timeline" optional name="timeline" options={[...TIMELINES]} />
       </div>
       <div className="mt-5">
         <TextArea label="Project description" name="project" required />
@@ -313,17 +340,37 @@ function TextArea(props: { label: string; name: string; required?: boolean }) {
 function SelectField(props: {
   label: string;
   name: string;
-  options: string[];
+  options: { value: string; label: string }[];
   optional?: boolean;
+  required?: boolean;
+  placeholder?: string;
+  /** Pass value + onChange to control the select; otherwise it manages itself. */
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
   const id = useId();
+  const controlled =
+    props.value === undefined
+      ? { defaultValue: "" }
+      : {
+          value: props.value,
+          onChange: (e: ChangeEvent<HTMLSelectElement>) => props.onChange?.(e.target.value),
+        };
   return (
     <div>
       <Label htmlFor={id} label={props.label} optional={props.optional} />
-      <select id={id} name={props.name} defaultValue="" className={inputClass}>
-        <option value="">Select…</option>
+      <select
+        id={id}
+        name={props.name}
+        required={props.required}
+        className={inputClass}
+        {...controlled}
+      >
+        <option value="">{props.placeholder ?? "Select…"}</option>
         {props.options.map((o) => (
-          <option key={o}>{o}</option>
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
         ))}
       </select>
     </div>
