@@ -103,6 +103,36 @@ export const services: Service[] = [
     relatedProjects: ["al-madina-jewellers", "khawaja-collection"],
   },
   {
+    slug: "mobile-apps",
+    title: "Mobile Apps",
+    summary: "iOS and Android apps for customers, staff and day-to-day operations.",
+    what: "Mobile apps for iPhone and Android that give customers an easier way to browse, order or book, or give your team a simple tool for the work they do on the move — connected to the same data as your website and systems.",
+    whoFor:
+      "Businesses whose customers come back often, or whose staff work away from a desk and need orders, requests or updates in their pocket.",
+    problems: [
+      "Repeat customers with no quick way to order, book or get updates",
+      "Field or shop-floor staff relying on calls and messages",
+      "Information that only lives on a desktop or in spreadsheets",
+      "An existing app that is slow, dated or hard to use",
+    ],
+    included: [
+      "App UX and interface design",
+      "iOS and Android from one codebase",
+      "Accounts, notifications and core app features",
+      "Connection to your website, database or APIs",
+      "Testing on real devices",
+      "App Store and Google Play submission",
+    ],
+    workflow: [
+      "Define the app",
+      "Design the screens",
+      "Build and connect",
+      "Test on devices",
+      "Publish and improve",
+    ],
+    relatedProjects: [],
+  },
+  {
     slug: "ai-business-systems",
     title: "AI Business Systems",
     summary: "Complete systems combining websites, AI, databases, APIs and automation.",

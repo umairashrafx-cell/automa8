@@ -14,7 +14,7 @@ export const Route = createFileRoute("/services")({
     pageHead({
       title: "Services | Automa8",
       description:
-        "AI agents, business automation, websites & e-commerce and AI business systems — what each includes, who it’s for and how the work is done.",
+        "AI agents, business automation, websites & e-commerce, mobile apps and AI business systems — what each includes, who it’s for and how the work is done.",
       path: "/services",
     }),
   component: ServicesPage,
@@ -26,7 +26,7 @@ function ServicesPage() {
       <PageIntro
         eyebrow="Services"
         title="What we build."
-        lead="Four ways we help businesses sell, operate and serve customers better — built around real workflows, not tool lists."
+        lead="Five ways we help businesses sell, operate and serve customers better — built around real workflows, not tool lists."
       >
         <nav aria-label="Services on this page">
           <ul className="flex flex-wrap gap-2">

@@ -1,4 +1,4 @@
-import { formatEnquiry, type Enquiry } from "./enquiry";
+import { enquiryDetails, formatEnquiry, type Enquiry } from "./enquiry";
 
 /**
  * Enquiries are stored in the Automa8 Supabase project. The table only allows anonymous INSERTs
@@ -24,7 +24,14 @@ export async function saveEnquiry(e: Enquiry): Promise<void> {
       email: e.email,
       company: e.company,
       budget: e.budget,
-      project: e.project,
+      // The table has no columns for these yet, so they lead the stored project text.
+      project: [
+        ...enquiryDetails({ ...e, budget: "" }).map(([k, v]) => `${k}: ${v}`),
+        "",
+        e.project,
+      ]
+        .join("\n")
+        .trim(),
       source: "automa8.co",
     }),
   });
@@ -55,7 +62,7 @@ function renderHtml(e: Enquiry) {
     ["Email", e.email],
   ];
   if (e.company) rows.push(["Business", e.company]);
-  if (e.budget) rows.push(["Budget", e.budget]);
+  rows.push(...enquiryDetails(e));
 
   return `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;color:#111">
   <h2 style="margin:0 0 16px;font-size:18px">New project enquiry from automa8.co</h2>
