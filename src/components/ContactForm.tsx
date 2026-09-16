@@ -1,24 +1,37 @@
-import { useId, useState, type FormEvent } from "react";
+import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { BUDGETS, formatEnquiry } from "@/lib/enquiry";
+import { BUDGET_TIERS, COUNTRIES, budgetLabel, currencyFor } from "@/lib/budget";
+import { PROJECT_TYPES, TIMELINES, formatEnquiry } from "@/lib/enquiry";
 import { submitEnquiry } from "@/lib/enquiry.functions";
 import { contact, whatsappLink } from "@/lib/site";
 
-type Brief = { name: string; email: string; company: string; budget: string; project: string };
+type Brief = {
+  name: string;
+  email: string;
+  company: string;
+  services: string[];
+  country: string;
+  budget: string;
+  timeline: string;
+  currentSite: string;
+  project: string;
+};
 
 type Status =
   | { state: "idle" }
   | { state: "sending" }
   | { state: "sent"; name: string }
-  | { state: "invalid"; message: string }
+  | { state: "invalid"; message: string; field?: string }
   | { state: "unavailable"; brief: Brief };
 
 /** Project enquiry form. Saves to Supabase and emails via Resend (see lib/enquiry*). */
 export function ContactForm() {
   const send = useServerFn(submitEnquiry);
   const [status, setStatus] = useState<Status>({ state: "idle" });
+  const [country, setCountry] = useState("");
+  const currency = currencyFor(country);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,15 +43,30 @@ export function ContactForm() {
       name: field("name"),
       email: field("email"),
       company: field("company"),
+      services: data.getAll("services").map(String),
+      country: field("country"),
       budget: field("budget"),
+      timeline: field("timeline"),
+      currentSite: field("currentSite"),
       project: field("project"),
     };
+
+    if (brief.services.length === 0) {
+      setStatus({
+        state: "invalid",
+        message: "Choose what you’d like to build.",
+        field: "services",
+      });
+      form.querySelector<HTMLInputElement>('input[name="services"]')?.focus();
+      return;
+    }
 
     setStatus({ state: "sending" });
     try {
       const result = await send({ data: { ...brief, website: field("website") } });
       if (result.ok) {
         form.reset();
+        setCountry("");
         setStatus({ state: "sent", name: brief.name.split(" ")[0] ?? brief.name });
       } else if (result.reason === "invalid") {
         setStatus({ state: "invalid", message: result.message });
@@ -102,13 +130,45 @@ export function ContactForm() {
         </label>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <ProjectTypes invalid={status.state === "invalid" && status.field === "services"} />
+
+      <div className="mt-6 grid gap-5 sm:grid-cols-2">
         <Field label="Name" name="name" autoComplete="name" required />
         <Field label="Email" name="email" type="email" autoComplete="email" required />
       </div>
       <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <Field label="Company" name="company" autoComplete="organization" />
-        <SelectField label="Budget" optional name="budget" options={[...BUDGETS]} />
+        <SelectField
+          label="Country"
+          name="country"
+          required
+          value={country}
+          onChange={setCountry}
+          placeholder="Select country…"
+          options={COUNTRIES.map(([code, name]) => ({ value: code, label: name }))}
+        />
+      </div>
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <SelectField
+          label={`Budget (${currency})`}
+          optional
+          name="budget"
+          options={BUDGET_TIERS.map((t) => ({ value: t.key, label: budgetLabel(t.key, currency) }))}
+        />
+        <SelectField
+          label="Timeline"
+          optional
+          name="timeline"
+          options={TIMELINES.map((t) => ({ value: t, label: t }))}
+        />
+      </div>
+      <div className="mt-5">
+        <Field
+          label="Current website or app"
+          name="currentSite"
+          autoComplete="url"
+          placeholder="Link, if you have one"
+        />
       </div>
       <div className="mt-5">
         <TextArea label="Project description" name="project" required />
@@ -207,12 +267,39 @@ function Label({
   );
 }
 
+/** "What do you need?" — pick one or more. Checkboxes styled as chips. */
+function ProjectTypes({ invalid }: { invalid: boolean }) {
+  const hintId = useId();
+  return (
+    <fieldset aria-describedby={hintId} aria-invalid={invalid || undefined}>
+      <legend className="mb-1 block text-sm font-medium text-foreground">What do you need?</legend>
+      <p
+        id={hintId}
+        className={`mb-3 text-[13px] ${invalid ? "font-medium text-[#B42318]" : "text-muted-foreground"}`}
+      >
+        {invalid ? "Choose at least one option." : "Choose all that apply."}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {PROJECT_TYPES.map((type) => (
+          <label key={type} className="cursor-pointer">
+            <input type="checkbox" name="services" value={type} className="peer sr-only" />
+            <span className="inline-flex h-10 items-center rounded-[10px] border border-border bg-background px-4 text-sm text-foreground transition-colors duration-200 select-none hover:border-border-strong peer-checked:border-signal-deep peer-checked:bg-signal/10 peer-checked:text-brand peer-focus-visible:ring-4 peer-focus-visible:ring-signal/25">
+              {type}
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 function Field(props: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
   autoComplete?: string;
+  placeholder?: string;
 }) {
   const id = useId();
   return (
@@ -224,6 +311,7 @@ function Field(props: {
         type={props.type ?? "text"}
         required={props.required}
         autoComplete={props.autoComplete}
+        placeholder={props.placeholder}
         maxLength={200}
         className={inputClass}
       />
@@ -252,17 +340,37 @@ function TextArea(props: { label: string; name: string; required?: boolean }) {
 function SelectField(props: {
   label: string;
   name: string;
-  options: string[];
+  options: { value: string; label: string }[];
   optional?: boolean;
+  required?: boolean;
+  placeholder?: string;
+  /** Pass value + onChange to control the select; otherwise it manages itself. */
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
   const id = useId();
+  const controlled =
+    props.value === undefined
+      ? { defaultValue: "" }
+      : {
+          value: props.value,
+          onChange: (e: ChangeEvent<HTMLSelectElement>) => props.onChange?.(e.target.value),
+        };
   return (
     <div>
       <Label htmlFor={id} label={props.label} optional={props.optional} />
-      <select id={id} name={props.name} defaultValue="" className={inputClass}>
-        <option value="">Select…</option>
+      <select
+        id={id}
+        name={props.name}
+        required={props.required}
+        className={inputClass}
+        {...controlled}
+      >
+        <option value="">{props.placeholder ?? "Select…"}</option>
         {props.options.map((o) => (
-          <option key={o}>{o}</option>
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
         ))}
       </select>
     </div>
