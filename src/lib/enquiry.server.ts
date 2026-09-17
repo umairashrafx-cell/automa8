@@ -1,5 +1,6 @@
 import { budgetSummary, getCountry } from "./budget";
-import { enquiryDetails, formatEnquiry, type Enquiry } from "./enquiry";
+import { type Enquiry } from "./enquiry";
+import { confirmationEmail, notificationEmail } from "./enquiry.emails";
 
 /**
  * Enquiries are stored in the Automa8 Supabase project. The table only allows anonymous INSERTs
@@ -40,58 +41,30 @@ export async function saveEnquiry(e: Enquiry): Promise<void> {
   }
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 /** Keep user input out of header-like fields. */
 function singleLine(value: string) {
   return value.replace(/[\r\n]+/g, " ").trim();
 }
 
-function renderHtml(e: Enquiry) {
-  const rows: [string, string][] = [
-    ["Name", e.name],
-    ["Email", e.email],
-  ];
-  if (e.company) rows.push(["Business", e.company]);
-  rows.push(...enquiryDetails(e));
-
-  return `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;color:#111">
-  <h2 style="margin:0 0 16px;font-size:18px">New project enquiry from automa8.co</h2>
-  <table style="border-collapse:collapse;margin-bottom:20px">
-    ${rows
-      .map(
-        ([k, v]) =>
-          `<tr><td style="padding:4px 16px 4px 0;color:#666">${k}</td><td style="padding:4px 0">${escapeHtml(v)}</td></tr>`,
-      )
-      .join("")}
-  </table>
-  <p style="margin:0 0 6px;color:#666">What they want to build</p>
-  <p style="margin:0;white-space:pre-wrap">${escapeHtml(e.project)}</p>
-</div>`;
-}
-
-/** Whether an email notification can be sent (RESEND_API_KEY is set). */
+/** Whether emails can be sent (RESEND_API_KEY is set). */
 export function emailConfigured() {
   return Boolean(process.env["RESEND_API_KEY"]);
 }
 
-/** Optional notification email via Resend. */
-export async function sendEnquiryEmail(e: Enquiry): Promise<void> {
+const fromAddress = () =>
+  process.env["ENQUIRY_FROM_EMAIL"] || "Automa8 Website <website@automa8.co>";
+const inbox = () => process.env["ENQUIRY_TO_EMAIL"] || "hello@automa8.co";
+
+async function sendEmail(message: {
+  to: string;
+  replyTo: string;
+  subject: string;
+  html: string;
+  text: string;
+  from?: string;
+}) {
   const apiKey = process.env["RESEND_API_KEY"];
   if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
-
-  const to = process.env["ENQUIRY_TO_EMAIL"] || "hello@automa8.co";
-  const from = process.env["ENQUIRY_FROM_EMAIL"] || "Automa8 Website <website@automa8.co>";
-  const subject = singleLine(
-    `New project enquiry — ${e.name}${e.company ? ` (${e.company})` : ""}`,
-  ).slice(0, 200);
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -100,12 +73,12 @@ export async function sendEnquiryEmail(e: Enquiry): Promise<void> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: e.email,
-      subject,
-      text: `New project enquiry from automa8.co\n\n${formatEnquiry(e)}`,
-      html: renderHtml(e),
+      from: message.from ?? fromAddress(),
+      to: [message.to],
+      reply_to: message.replyTo,
+      subject: singleLine(message.subject).slice(0, 200),
+      html: message.html,
+      text: message.text,
     }),
   });
 
@@ -113,4 +86,24 @@ export async function sendEnquiryEmail(e: Enquiry): Promise<void> {
     const body = await response.text();
     throw new Error(`Resend request failed [${response.status}]: ${body}`);
   }
+}
+
+/** Notification to the Automa8 inbox. Replying goes to the person who enquired. */
+export async function sendEnquiryEmail(e: Enquiry): Promise<void> {
+  await sendEmail({
+    to: inbox(),
+    replyTo: e.email,
+    subject: `New project enquiry — ${e.name}${e.company ? ` (${e.company})` : ""}`,
+    ...notificationEmail(e),
+  });
+}
+
+/** "Thanks, I'll be in touch" to the person who enquired. Replying goes to the Automa8 inbox. */
+export async function sendConfirmationEmail(e: Enquiry): Promise<void> {
+  await sendEmail({
+    to: e.email,
+    replyTo: inbox(),
+    from: process.env["CONFIRMATION_FROM_EMAIL"] || "Umair at Automa8 <website@automa8.co>",
+    ...confirmationEmail(e),
+  });
 }

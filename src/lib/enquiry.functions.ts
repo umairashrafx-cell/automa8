@@ -15,7 +15,8 @@ export const submitEnquiry = createServerFn({ method: "POST" })
       };
     }
 
-    const { saveEnquiry, sendEnquiryEmail, emailConfigured } = await import("./enquiry.server");
+    const { saveEnquiry, sendEnquiryEmail, sendConfirmationEmail, emailConfigured } =
+      await import("./enquiry.server");
     const enquiry = parsed.data;
 
     // Store first (the source of truth), then notify by email if Resend is configured.
@@ -28,6 +29,13 @@ export const submitEnquiry = createServerFn({ method: "POST" })
     if (saved.status === "rejected") console.error(saved.reason);
     if (emailed.status === "rejected" && emailConfigured()) console.error(emailed.reason);
 
-    if (saved.status === "fulfilled" || emailed.status === "fulfilled") return { ok: true };
-    return { ok: false, reason: "unavailable" };
+    if (saved.status === "rejected" && emailed.status === "rejected") {
+      return { ok: false, reason: "unavailable" };
+    }
+
+    // Only confirm once the enquiry is safely in. A failed confirmation never fails the enquiry.
+    if (emailConfigured()) {
+      await sendConfirmationEmail(enquiry).catch((error: unknown) => console.error(error));
+    }
+    return { ok: true };
   });
