@@ -1,3 +1,4 @@
+import { budgetSummary, getCountry } from "./budget";
 import { enquiryDetails, formatEnquiry, type Enquiry } from "./enquiry";
 
 /**
@@ -23,13 +24,12 @@ export async function saveEnquiry(e: Enquiry): Promise<void> {
       name: e.name,
       email: e.email,
       company: e.company,
-      // The budget column only accepts the old fixed labels, and there are no columns for country,
-      // needs, timeline or current site, so these details lead the stored project text instead
-      // (the column allows up to 3000 characters).
-      budget: "",
-      project: [...enquiryDetails(e).map(([k, v]) => `${k}: ${v}`), "", e.project]
-        .join("\n")
-        .slice(0, 3000),
+      services: e.services,
+      country: getCountry(e.country)?.[1] ?? "",
+      budget: e.budget ? budgetSummary(e.budget, e.country) : "",
+      timeline: e.timeline,
+      current_site: e.currentSite,
+      project: e.project,
       source: "automa8.co",
     }),
   });
