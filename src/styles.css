@@ -304,3 +304,33 @@
     text-decoration-color: var(--brand);
   }
 }
+
+/* --------------------------------------------------------------------------
+   Printing a proposal. The admin screen marks the document .print-area; everything
+   else on the page is hidden so Print (or Save as PDF) gives the client's copy alone.
+   -------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+  }
+
+  .proposal-doc section,
+  .proposal-doc tr {
+    break-inside: avoid;
+  }
+}

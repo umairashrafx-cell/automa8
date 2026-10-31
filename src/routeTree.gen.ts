@@ -15,10 +15,15 @@ import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
+import { Route as AdminRatesRouteImport } from './routes/admin/rates'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminProposalsIdRouteImport } from './routes/admin/proposals/$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -50,6 +55,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -65,23 +75,48 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   id: '/projects/$slug',
   path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRatesRoute = AdminRatesRouteImport.update({
+  id: '/rates',
+  path: '/rates',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProposalsIdRoute = AdminProposalsIdRouteImport.update({
+  id: '/proposals/$id',
+  path: '/proposals/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/rates': typeof AdminRatesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/admin/proposals/$id': typeof AdminProposalsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,35 +127,49 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/rates': typeof AdminRatesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/admin/proposals/$id': typeof AdminProposalsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/rates': typeof AdminRatesRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/admin/proposals/$id': typeof AdminProposalsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/cookies'
     | '/privacy'
     | '/security'
     | '/services'
     | '/terms'
+    | '/admin/login'
+    | '/admin/rates'
     | '/projects/$slug'
+    | '/admin/'
     | '/projects/'
+    | '/admin/proposals/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,25 +180,35 @@ export interface FileRouteTypes {
     | '/security'
     | '/services'
     | '/terms'
+    | '/admin/login'
+    | '/admin/rates'
     | '/projects/$slug'
+    | '/admin'
     | '/projects'
+    | '/admin/proposals/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/cookies'
     | '/privacy'
     | '/security'
     | '/services'
     | '/terms'
+    | '/admin/login'
+    | '/admin/rates'
     | '/projects/$slug'
+    | '/admin/'
     | '/projects/'
+    | '/admin/proposals/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -204,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -225,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/projects/$slug': {
       id: '/projects/$slug'
       path: '/projects/$slug'
@@ -232,12 +305,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/rates': {
+      id: '/admin/rates'
+      path: '/rates'
+      fullPath: '/admin/rates'
+      preLoaderRoute: typeof AdminRatesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/proposals/$id': {
+      id: '/admin/proposals/$id'
+      path: '/proposals/$id'
+      fullPath: '/admin/proposals/$id'
+      preLoaderRoute: typeof AdminProposalsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminRatesRoute: typeof AdminRatesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminProposalsIdRoute: typeof AdminProposalsIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminRatesRoute: AdminRatesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminProposalsIdRoute: AdminProposalsIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   PrivacyRoute: PrivacyRoute,
