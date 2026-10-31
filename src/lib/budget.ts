@@ -167,6 +167,11 @@ export function currencyFor(countryCode: string) {
   return currency in RATES_PER_USD ? currency : "USD";
 }
 
+/** Approximate units of a currency per US dollar. 1 for anything not listed. */
+export function rateFor(currency: string) {
+  return RATES_PER_USD[currency] ?? 1;
+}
+
 /** Round to a friendly figure: the nearest half step of its leading digit (28,000 → 30,000). */
 function friendly(value: number) {
   const magnitude = 10 ** Math.floor(Math.log10(value));
