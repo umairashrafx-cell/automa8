@@ -172,6 +172,9 @@ export function rateFor(currency: string) {
   return RATES_PER_USD[currency] ?? 1;
 }
 
+/** Every currency a price can be shown in, US dollars first. */
+export const CURRENCY_CODES = Object.keys(RATES_PER_USD);
+
 /** Round to a friendly figure: the nearest half step of its leading digit (28,000 → 30,000). */
 function friendly(value: number) {
   const magnitude = 10 ** Math.floor(Math.log10(value));

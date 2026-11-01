@@ -185,7 +185,9 @@ export const saveRateCard = createServerFn({ method: "POST" })
       const prices: RateCard = {};
       for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
         if (ITEMS.has(key) && typeof value === "number" && Number.isFinite(value) && value >= 0) {
-          prices[key] = Math.round(value * 100) / 100;
+          // Six places, not two: a round figure typed in rupees or dong divides into a long decimal
+          // in dollars, and at two places it comes back a unit or two off what was typed.
+          prices[key] = Math.round(value * 1000000) / 1000000;
         }
       }
       const { saveRateCard: save } = await import("./proposal.server");
