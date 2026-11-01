@@ -25,6 +25,9 @@ export const navLinks = [
   { to: "/services", label: "Services" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
+  // The proposal builder. It asks for a password and the whole /admin branch is noindex,
+  // so the link is a shortcut for you, not an entrance for anyone else.
+  { to: "/admin", label: "Admin" },
 ] as const;
 
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
